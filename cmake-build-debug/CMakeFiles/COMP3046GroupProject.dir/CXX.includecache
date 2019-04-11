@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/jackylam/Desktop/COMP3046GroupProject/main.cpp
+iostream
+-
+vector
+-
+math.h
+-
+fstream
+-
+sstream
+-
+string
+-
+random
+-
+time.h
+-
+algorithm
+-
+
