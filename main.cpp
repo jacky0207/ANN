@@ -9,6 +9,9 @@
 //#include <windows.h>
 #include <algorithm>
 
+// Custom
+#include "ANN.h"
+
 using namespace std;
 
 int main(int argc, const char * argv[]) {
@@ -38,6 +41,14 @@ int main(int argc, const char * argv[]) {
 
         myfile.close();
         cout << "Loading data finished.\n";
+    }
+    else
+        cout << "Unable to open file" << '\n';
+
+    ANN ann(2, 10, 16);
+
+    return 0;
+}
 
 //        vector< vector <float> >::iterator rowIteratorX = X_train.begin();
 //        int rowX = 0;
@@ -79,9 +90,3 @@ int main(int argc, const char * argv[]) {
 //        }
 //
 //        cout << endl << endl;
-    }
-    else
-        cout << "Unable to open file" << '\n';
-
-    return 0;
-}

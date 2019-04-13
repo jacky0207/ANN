@@ -11,23 +11,27 @@
 // Train -> FeedForward(0->1->2->...->n) -> Backprogagation(loss->partial derivative->errors) -> sgd
 class ANN {
 private:
-    int hiddenLayer;
+    int hiddenLayer;    // 2nd - (L-1)th layer
     int* hiddenLayerNeuron;
+    int outputNeuron;   // 0-9
 
-    std::vector< std::vector < float > > W[];   // w = (w00, ..., w0n
+    int inputNeuron;  // column length of W
+    std::vector< std::vector < float > > *W;    // array of W for each layer
+                                                // w = (w00, ..., w0n
                                                 //      ...
                                                 //      wm0, ..., wmn)
-    std::vector< float > b[];   // bias
+
+    std::vector< float > *b;   // bias
                                 // b = (b0
                                 //      ...
                                 //      bn)
-    std::vector< float > a[];   // activation sgm(z)
+    std::vector< float > *a;   // activation sgm(z)
                                 // a = (a0
                                 //      ...
                                 //      an)
 
 private:
-    void InitializeW(vector< vector < float > > X);
+    void InitializeW(std::vector< std::vector < float > > X);
 
     void FeedForward(int layer);
     void Error(int layer);
@@ -45,11 +49,11 @@ private:
     void LoadWeight();
 
 public:
-    ANN(int hiddenLayer, ...);  // Set the number of layers
-                                // and the number of neurons in each layer
+    explicit ANN(int hiddenLayer, ...);    // Set the number of layers
+                                        // and the number of neurons in each layer
 
     void Train(std::vector< std::vector < float > > X,  // start from 2nd digit of dataset
-               std::vector < float > Y; // 1st digit of dataset
+               std::vector < float > Y, // 1st digit of dataset
                float r,
                int miniBatchSize,   // number of mini-batch = total number of dataset / mini-batch size
                int epoch);
