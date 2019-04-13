@@ -1,4 +1,4 @@
-# Install script for directory: /Users/jackylam/Desktop/COMP3046GroupProject
+# Install script for directory: /Users/jackylam/Documents/GitHub/COMP3046GroupProject
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/jackylam/Desktop/COMP3046GroupProject/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/jackylam/Documents/GitHub/COMP3046GroupProject/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

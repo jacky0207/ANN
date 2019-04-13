@@ -4,18 +4,22 @@
 
 #include "ANN.h"
 
+ANN::ANN(int hiddenLayer, ...)
+{
 
-void ANN::Train(std::vector <float> <vector> X, float r,int miniBatchSize,int epoch){
-    int runCount = 0;
-    while (runCount < epoch) {
-
-        // using built-in random generator:
-        std::random_shuffle ( X.begin(), X.end() );
-
-
-
-
-
-        runCount++;
-    }
 }
+
+//void ANN::Train(std::vector <float> <vector> X, float r,int miniBatchSize,int epoch){
+//    int runCount = 0;
+//    while (runCount < epoch) {
+//
+//        // using built-in random generator:
+//        std::random_shuffle ( X.begin(), X.end() );
+//
+//
+//
+//
+//
+//        runCount++;
+//    }
+//}

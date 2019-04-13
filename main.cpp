@@ -38,6 +38,47 @@ int main(int argc, const char * argv[]) {
 
         myfile.close();
         cout << "Loading data finished.\n";
+
+//        vector< vector <float> >::iterator rowIteratorX = X_train.begin();
+//        int rowX = 0;
+//
+//        // Predict X for each row
+//        while(rowIteratorX != X_train.end())	// Loop every row
+//        {
+//            vector< float >::iterator columnIteratorX = (*rowIteratorX).begin();
+//            int columnX = 0;
+//
+//            // Predict X for each row
+//            while(columnIteratorX != (*rowIteratorX).end())	// Loop every row
+//            {
+//                cout << (*rowIteratorX).at(columnX) * 255 << "\t";
+//
+//                // rowIteratorX
+//                columnIteratorX++;
+//                columnX++;
+//            }
+//
+//            cout << endl << endl;
+//
+//            // rowIteratorX
+//            rowIteratorX++;
+//            rowX++;
+//        }
+
+//        vector< float >::iterator iteratorY = y_train.begin();
+//        int indexY = 0;
+//
+//        // Predict X for each row
+//        while(iteratorY != y_train.end())	// Loop every row
+//        {
+//            cout << y_train.at(indexY) << "\t";
+//
+//            // rowIteratorX
+//            iteratorY++;
+//            indexY++;
+//        }
+//
+//        cout << endl << endl;
     }
     else
         cout << "Unable to open file" << '\n';

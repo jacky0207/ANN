@@ -6,27 +6,16 @@
 #include <string>
 #include <random>
 #include <time.h>
-// #include <windows.h>
+#include <windows.h>
 #include <algorithm>
 
 using namespace std;
 
-vector< vector<float> > X_train;
-vector<float> y_train;
-
-void LoadXY();
-
 int main(int argc, const char * argv[]) {
 
-//	vector< vector<float> > X_train;
-//	vector<float> y_train;
-    LoadXY();
+    vector< vector<float> > X_train;
+    vector<float> y_train;
 
-	return 0;
-}
-
-void LoadXY()
-{
     ifstream myfile("data/train_small.txt");
 
     if (myfile.is_open())
@@ -52,4 +41,6 @@ void LoadXY()
     }
     else
         cout << "Unable to open file" << '\n';
+
+    return 0;
 }
