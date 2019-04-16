@@ -11,9 +11,9 @@ using namespace std;
 
 ANN::ANN(int hiddenLayer, ...)
     : layer(hiddenLayer + 2)
-    , W(0)
-    , b(0)
-    , a(0)
+    , WList(0)
+    , bList(0)
+    , aList(0)
 {
     cout << "-------------------------" << "Initialize neuron" << "-------------------------" << endl;
 
@@ -54,6 +54,11 @@ void ANN::Train(vector<vector<float> > X,
     InitializeW(X);
 
     // Start train
+    for (int layerIndex = 1; layerIndex < layer; layerIndex++)
+    {
+        FeedForward(layerIndex, X);
+    }
+
 //    int runCount = 0;
 //    while (runCount < epoch) {
 //
@@ -78,22 +83,22 @@ void ANN::InitializeW(vector<vector<float> > X)
     // Debug layer neuron
     PrintNeuron();
 
-    vector < vector < vector < float > > > W;  // temp W
+    vector<vector<vector<float> > > WList;  // temp W
 
     for (int layerIndex = 1; layerIndex < layer; layerIndex++)  // l = 2-L, loop hidden layer
     {
-        vector <  vector < float > > layerW;    // W of current layer
+        vector<vector<float> > W;    // W of current layer
         int lastLayerNeuron = neuron[layerIndex - 1];   // last layer neuron number
 
         for (int layerNeuron = 0; layerNeuron < neuron[layerIndex]; layerNeuron++)   // row = neuron number
         {
-            layerW.push_back(vector< float >(lastLayerNeuron, 0)); // column = last layer neuron number
+            W.push_back(vector<float>(lastLayerNeuron, 0)); // column = last layer neuron number
         }
 
-        W.push_back(layerW);    // push to W
+        WList.push_back(W);    // push to W
     }
 
-    this->W = &W;
+    this->WList = &WList;
 
     // Debug W
     PrintWeight();
@@ -104,52 +109,41 @@ void ANN::InitializeW(vector<vector<float> > X)
 
     cout << "-------------------------" << "Initialize b" << "-------------------------" << endl;
 
-    vector < vector < float > > b;  // temp b
+    vector<vector<float > > bList;  // temp b
 
     for (int layerIndex = 1; layerIndex < layer; layerIndex++)  // l = 2-L, loop hidden layer
     {
-        b.push_back(vector < float > (neuron[layerIndex], 1));
+        bList.push_back(vector<float>(neuron[layerIndex], 1));
     }
 
-    this->b = &b;
+    this->bList = &bList;
 
     // Debug b
     PrintBias();
 
     cout << "-------------------------" << "end Initialize b" << "-------------------------" << endl;
-
-
-//    // Get length of row
-//    vector< vector <float> >::iterator iteratorX = X.begin();
-//    vector<float>::iterator iteratorXData = (*iteratorX).begin();
-//    int indexXData = 0;
-//
-//    while(iteratorXData != (*iteratorX).end())
-//    {
-//        // Increment
-//        iteratorXData++;
-//        indexXData++;
-//    }
-//
-//    rowLength = indexXData + 1;	// Set row length, including bias
-
-//    // Load Weight
-//    if (!saveAndLoad || !LoadWeight())
-//    {
-//        // Initialize if cannot load weight
-//        float WArray[indexXData];	// Set W array to all 0, except 1st is 1 for bias
-//
-//        WArray[0] = 1;	// bias
-//
-//        for (int index = 1; index < rowLength; index++)
-//        {
-//            WArray[index] = 0;	// weight
-//        }
-//
-//        W = new Vector<float>(WArray, rowLength);	// (b, 0, ..., 0)
-//    }
 }
 
+// --------------------------------------------------------------------------- Feed Forward Function ---------------------------------------------------------------------------
+void ANN::FeedForward(int l, vector<vector<float> > X)
+{
+    vector< float > layer = SigmoidActivation(l, X);
+}
+
+// al = sgm(zl), zl = wla(l-1) + bl
+vector<float> ANN::SigmoidActivation(int l, vector<vector<float> > X)
+{
+    vector<float> a, layerZ, previousLayerA, layerB;
+    vector<vector<float> > w;
+
+//    w = W->at(l - 1);
+//    previousA = l == 1 ?
+
+    return a;
+}
+// --------------------------------------------------------------------------- Feed Forward Function ---------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------- Debugging ---------------------------------------------------------------------------
 void ANN::PrintNeuron()
 {
     cout << "Number o layer: " << layer << endl;
@@ -167,15 +161,15 @@ void ANN::PrintWeight()
 {
     cout << "-------------------------" << "Print Weight" << "-------------------------" << endl;
 
-    for (int layerIndex = 1; layerIndex < W->size() + 1; layerIndex++)
+    for (int layerIndex = 1; layerIndex < WList->size() + 1; layerIndex++)
     {
         cout << "layer " << layerIndex << endl;
 
-        vector < vector < float > > layerW = W->at(layerIndex - 1);    // W of current layer
+        vector<vector<float> > layerW = WList->at(layerIndex - 1);    // W of current layer
 
         for (int neuronNumber = 0; neuronNumber < layerW.size(); neuronNumber++)   // row = neuron number
         {
-            vector < float > rowW = layerW.at(layerIndex - 1);    // W of current layer
+            vector<float> rowW = layerW.at(layerIndex - 1);    // W of current layer
 
             for (int row = 0; row < rowW.size(); row++)
             {
@@ -195,12 +189,12 @@ void ANN::PrintBias()
 {
     for (int layerIndex = 1; layerIndex < layer; layerIndex++)
     {
-        vector < float > layerb = b->at(layerIndex - 1);    // W of current layer
+        vector<float> b = bList->at(layerIndex - 1);    // W of current layer
         cout << "layer " << layerIndex << endl;
 
-        for (int neuronNumber = 0; neuronNumber < layerb.size(); neuronNumber++)   // length = neuron number
+        for (int neuronNumber = 0; neuronNumber < b.size(); neuronNumber++)   // length = neuron number
         {
-            cout << layerb.at(neuronNumber) << " ";
+            cout << b.at(neuronNumber) << " ";
         }
 
         cout << endl;
