@@ -15,6 +15,8 @@
       <change beforePath="$PROJECT_DIR$/ANN.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ANN.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ANN.h" beforeDir="false" afterPath="$PROJECT_DIR$/ANN.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/a.out" beforeDir="false" afterPath="$PROJECT_DIR$/a.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test" beforeDir="false" afterPath="$PROJECT_DIR$/test" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,8 +48,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="600">
-              <caret line="40" selection-start-line="40" selection-end-line="40" />
+            <state relative-caret-position="270">
+              <caret line="18" column="32" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -58,8 +60,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ANN.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="28" column="43" selection-start-line="28" selection-start-column="43" selection-end-line="28" selection-end-column="43" />
+            <state relative-caret-position="694">
+              <caret line="54" column="24" selection-start-line="54" selection-start-column="9" selection-end-line="54" selection-end-column="24" />
               <folding>
                 <element signature="e#103#120#0" expanded="true" />
               </folding>
@@ -70,8 +72,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ANN.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="428">
-              <caret line="106" lean-forward="true" selection-start-line="106" selection-end-line="106" />
+            <state relative-caret-position="309">
+              <caret line="178" column="53" selection-start-line="178" selection-start-column="53" selection-end-line="178" selection-end-column="53" />
               <folding>
                 <element signature="e#46#62#0" expanded="true" />
               </folding>
@@ -83,7 +85,7 @@
         <entry file="file://$PROJECT_DIR$/Perceptron.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="285">
-              <caret line="19" column="30" lean-forward="true" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
+              <caret line="19" column="30" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
               <folding>
                 <element signature="e#45#62#0" expanded="true" />
               </folding>
@@ -94,12 +96,21 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Perceptron.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="382">
-              <caret line="203" column="30" selection-start-line="203" selection-start-column="23" selection-end-line="203" selection-end-column="30" />
+            <state relative-caret-position="-1650">
+              <caret line="52" column="56" selection-start-line="52" selection-start-column="56" selection-end-line="52" selection-end-column="56" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#76#99#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-49362452">
+              <caret line="326" column="3" selection-start-line="326" selection-start-column="3" selection-end-line="326" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -115,17 +126,31 @@
       <find>rowLen</find>
       <find>numberOfLayer</find>
       <find>hiddenLayer</find>
-      <find>InitializeW</find>
       <find>std::vector&lt;std::vector &lt; float &gt; &gt;</find>
       <find>vector &lt; vector &lt; vector &lt; float &gt; &gt; &gt;</find>
       <find>layerb</find>
-      <find>std::vector &lt; float &gt;</find>
       <find>layerB</find>
+      <find>train</find>
+      <find>std::vector &lt; float &gt;</find>
+      <find>layerW</find>
+      <find>neuronNumber</find>
+      <find>layerNeuron</find>
+      <find>X</find>
+      <find>WList-&gt;</find>
+      <find>bList</find>
+      <find>bList-&gt;</find>
+      <find>784</find>
+      <find>InitializeW</find>
+      <find>previousA</find>
+      <find>sample</find>
     </findStrings>
     <replaceStrings>
       <replace>std::vector&lt;std::vector&lt;float&gt; &gt;</replace>
-      <replace>vector&lt;vector&lt;vector&lt;float&gt; &gt; &gt;</replace>
       <replace>std::vector&lt;float&gt;</replace>
+      <replace>vector&lt;vector&lt;vector&lt;float&gt; &gt; &gt;</replace>
+      <replace>WList.</replace>
+      <replace>neuronIndex</replace>
+      <replace>bList.</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -138,8 +163,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/data_load.cpp" />
-        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/ANN.h" />
+        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/ANN.cpp" />
       </list>
     </option>
@@ -167,6 +192,11 @@
               <item name="COMP3046GroupProject" type="b2602c69:ProjectViewProjectNode" />
               <item name="COMP3046GroupProject" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="COMP3046GroupProject" type="b2602c69:ProjectViewProjectNode" />
+              <item name="COMP3046GroupProject" type="462c0819:PsiDirectoryNode" />
+              <item name="IndividualProject2" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -218,18 +248,18 @@
       <updated>1554975113203</updated>
       <workItem from="1554975114645" duration="1633000" />
       <workItem from="1555167187218" duration="6866000" />
-      <workItem from="1555379484161" duration="8832000" />
+      <workItem from="1555379484161" duration="14616000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="17331000" />
+    <option name="totallyTimeSpent" value="23115000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="1027" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25579977" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25579977" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -272,9 +302,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/train_small.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -282,26 +309,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="16">
           <caret line="5" column="17" lean-forward="true" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/IndividualProject2/main_sample.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="30" column="40" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -332,10 +339,20 @@
     <entry file="file://$PROJECT_DIR$/Matrix.h">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/IndividualProject2/main_sample.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="30" column="40" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Perceptron.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
-          <caret line="19" column="30" lean-forward="true" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
+          <caret line="19" column="30" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
           <folding>
             <element signature="e#45#62#0" expanded="true" />
           </folding>
@@ -344,8 +361,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Perceptron.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="203" column="30" selection-start-line="203" selection-start-column="23" selection-end-line="203" selection-end-column="30" />
+        <state relative-caret-position="-1650">
+          <caret line="52" column="56" selection-start-line="52" selection-start-column="56" selection-end-line="52" selection-end-column="56" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#76#99#0" expanded="true" />
@@ -353,20 +370,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="32" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ANN.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="43" selection-start-line="28" selection-start-column="43" selection-end-line="28" selection-end-column="43" />
+        <state relative-caret-position="694">
+          <caret line="54" column="24" selection-start-line="54" selection-start-column="9" selection-end-line="54" selection-end-column="24" />
           <folding>
             <element signature="e#103#120#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-49362452">
+          <caret line="326" column="3" selection-start-line="326" selection-start-column="3" selection-end-line="326" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ANN.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="428">
-          <caret line="106" lean-forward="true" selection-start-line="106" selection-end-line="106" />
+        <state relative-caret-position="309">
+          <caret line="178" column="53" selection-start-line="178" selection-start-column="53" selection-end-line="178" selection-end-column="53" />
           <folding>
             <element signature="e#46#62#0" expanded="true" />
           </folding>

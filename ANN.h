@@ -16,17 +16,17 @@ private:
 
     int* neuron;    // array of neuron number in every layer
 
-    std::vector<std::vector<std::vector<float> > > *WList;    // Weight layer 2-L, m = last layer neuron number
+    std::vector<std::vector<std::vector<float> > > WList;    // Weight layer 2-L, m = last layer neuron number
                                                                 // w = (w00, ..., w0m
                                                                 //      ...
                                                                 //      wn0, ..., wnm)
 
-    std::vector<std::vector<float> > *bList; // bias layer 2-L
+    std::vector<std::vector<float> > bList; // bias layer 2-L
                                             // b = (b0
                                             //      ...
                                             //      bn)
 
-    std::vector<std::vector<float> > *aList; // activation sgm(z) layer 2-L
+    std::vector<std::vector<float> > aList; // activation sgm(z) layer 2-L
                                             // a = (a0
                                             //      ...
                                             //      an)
@@ -34,8 +34,8 @@ private:
 private:
     void InitializeW(std::vector<std::vector<float> > X);
 
-    void FeedForward(int l, std::vector<std::vector<float> > X);
-    std::vector<float> SigmoidActivation(int l, std::vector<std::vector<float> > X);
+    void FeedForward(int l, std::vector<float> sample);
+    std::vector<float> SigmoidActivation(int l, std::vector<float> sample);
 
     void Error(int layer);
     void backPropagation(int l);
@@ -52,6 +52,7 @@ private:
     void PrintNeuron();
     void PrintWeight();
     void PrintBias();
+    void PrintActivation();
 
 public:
     explicit ANN(int hiddenLayer, ...);    // Set the number of layers
