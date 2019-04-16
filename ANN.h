@@ -5,27 +5,34 @@
 #ifndef GROUPPROJECT1_ANN_H
 #define GROUPPROJECT1_ANN_H
 
+#include <vector>
 #include <algorithm>    // std::random_shuffle
 
 
 // Train -> FeedForward(0->1->2->...->n) -> Backprogagation(loss->partial derivative->errors) -> sgd
 class ANN {
 private:
-    int hiddenLayer;    // 2nd - (L-1)th layer
-    int* hiddenLayerNeuron;
-    int outputNeuron;   // 0-9
+//    int hiddenLayer;    // 2nd - (L-1)th layer
+//    int* hiddenLayerNeuron; // array of number of neuron of hidden layer
+//    int outputNeuron;   // 0-9
+//
+//    int inputNeuron;  // column length of W
 
-    int inputNeuron;  // column length of W
-    std::vector< std::vector < float > > *W;    // array of W for each layer
-                                                // w = (w00, ..., w0n
-                                                //      ...
-                                                //      wm0, ..., wmn)
+    int layer;  // number of layer i.e input + hidden + output
 
-    std::vector< float > *b;   // bias
+    int* neuron;    // array of neuron number in every layer
+
+    std::vector< std::vector < std::vector < float > > > *W;    // Weight layer 2-L, m = last layer neuron number
+                                                                // w = (w00, ..., w0m
+                                                                //      ...
+                                                                //      wn0, ..., wnm)
+
+    std::vector< std::vector< float > > *b;   // bias layer 2-L
                                 // b = (b0
                                 //      ...
                                 //      bn)
-    std::vector< float > *a;   // activation sgm(z)
+
+    std::vector< std::vector< float > > *a;   // activation sgm(z) layer 2-L
                                 // a = (a0
                                 //      ...
                                 //      an)
@@ -47,6 +54,11 @@ private:
     // Save and load
     void SaveWeight();
     void LoadWeight();
+
+    // Debug
+    void PrintNeuron();
+    void PrintWeight();
+    void PrintBias();
 
 public:
     explicit ANN(int hiddenLayer, ...);    // Set the number of layers

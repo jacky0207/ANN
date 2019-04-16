@@ -15,7 +15,7 @@
 using namespace std;
 
 int main(int argc, const char * argv[]) {
-
+    // Load data
     vector< vector<float> > X_train;
     vector<float> y_train;
 
@@ -45,7 +45,9 @@ int main(int argc, const char * argv[]) {
     else
         cout << "Unable to open file" << '\n';
 
-    ANN ann(2, 10, 16);
+    // Test ann class
+    ANN ann(2, 16, 12);
+    ann.Train(X_train, y_train, 0.01, 4, 5);
 
     return 0;
 }
