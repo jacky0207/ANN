@@ -112,6 +112,10 @@ void ANN::Train(vector<vector<float> > X,
         {
             cout << "--------------------------------------------------" << "Mini-batch " << miniBatchIndex << "--------------------------------------------------" << endl;
 
+            cout << "Before" << endl;
+            PrintWeight();
+            PrintBias();
+
             // Store list of all samples in the mini-batch
             // sample->layer->value
             vector<vector<vector<float> > > miniBatchErrorList; // all error list in a mini-batch
@@ -208,9 +212,6 @@ void ANN::Train(vector<vector<float> > X,
                      
             // Adjust Weights
             updateWeights(r, miniBatchAList, miniBatchErrorList);
-
-            PrintWeight();
-            PrintBias();
                         
             cout << "--------------------------------------------------" << "end Mini-batch " << miniBatchIndex << "--------------------------------------------------" << endl;
             cout << endl;
@@ -220,6 +221,10 @@ void ANN::Train(vector<vector<float> > X,
     }
 
     cout << "--------------------------------------------------" << "end Train" << "--------------------------------------------------" << endl;
+
+    cout << "After" << endl;
+    PrintWeight();
+    PrintBias();
 
     // Start train
 //     while (runCount < epoch) {
@@ -562,7 +567,26 @@ void ANN::updateWeights(float r,
                 bSum.at(rowIndex) += error.at(rowIndex);    // loss
             }
             // cout << endl;
+            // cout << endl;
         }
+
+        cout << "wSum" << endl;
+        for (int rowIndex = 0; rowIndex < row; rowIndex++)
+        {
+            for (int columnIndex = 0; columnIndex < column; columnIndex++)
+            {
+                cout << wSum.at(rowIndex).at(columnIndex) << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+
+        cout << "bSum" << endl;
+        for (int rowIndex = 0; rowIndex < row; rowIndex++)
+        {
+            cout << bSum.at(rowIndex) << " ";
+        }
+        cout << endl;
 
         // cout << "original W and b" << endl;
         // PrintWeight();
@@ -579,9 +603,9 @@ void ANN::updateWeights(float r,
             b->at(rowIndex) -= r / miniBatchAList.size() * bSum.at(rowIndex);
         }
 
-        // cout << "Updated W and b" << endl;
-        // PrintWeight();
-        // PrintBias();
+        cout << "Updated W and b" << endl;
+        PrintWeight();
+        PrintBias();
 
         cout << "-------------------------" << "end Layer " << layerIndex << "-------------------------" << endl;
     }
