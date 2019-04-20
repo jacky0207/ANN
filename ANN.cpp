@@ -132,8 +132,8 @@ void ANN::Train(vector<vector<float> > X,
                     // cout << "processing layer : " << layerIndex << endl;
                 }
 
-                PrintActivation();            
-                PrintBias();
+                // PrintActivation();            
+                // PrintBias();
 
                 cout << "-------------------------" << "end Initialize a" << "-------------------------" << endl;
 
@@ -162,54 +162,54 @@ void ANN::Train(vector<vector<float> > X,
                 miniBatchErrorList.push_back(errorsList);
             }
 
-            // Debug mini batch list
-            cout << endl;
-            cout << "-------------------------" << "Mini batch a list" << "-------------------------" << endl;
-            for (int i1 = 0; i1 < miniBatchSize; i1++)
-            {
-                cout << "-------------------------" << "Sample " << i1 << "-------------------------" << endl;
-                vector<vector<float> > aList = miniBatchAList.at(i1);
-                for (int i2 = 0; i2 < aList.size(); i2++)
-                {
-                    vector<float> a = aList.at(i2);
-                    for (int i3 = 0; i3 < a.size(); i3++)
-                    {
-                        cout << a.at(i3) << " ";                        
-                    }   
-                    cout << endl;
-                }
-                cout << "-------------------------" << "end Sample " << i1 << "-------------------------" << endl;
-                cout << endl;
-            }
-            cout << "-------------------------" << "end Mini batch a list" << "-------------------------" << endl;
-            cout << endl;
+            // // Debug mini batch list
+            // cout << endl;
+            // cout << "-------------------------" << "Mini batch a list" << "-------------------------" << endl;
+            // for (int i1 = 0; i1 < miniBatchSize; i1++)
+            // {
+            //     cout << "-------------------------" << "Sample " << i1 << "-------------------------" << endl;
+            //     vector<vector<float> > aList = miniBatchAList.at(i1);
+            //     for (int i2 = 0; i2 < aList.size(); i2++)
+            //     {
+            //         vector<float> a = aList.at(i2);
+            //         for (int i3 = 0; i3 < a.size(); i3++)
+            //         {
+            //             cout << a.at(i3) << " ";                        
+            //         }   
+            //         cout << endl;
+            //     }
+            //     cout << "-------------------------" << "end Sample " << i1 << "-------------------------" << endl;
+            //     cout << endl;
+            // }
+            // cout << "-------------------------" << "end Mini batch a list" << "-------------------------" << endl;
+            // cout << endl;
 
-            // Debug mini batch list
-            cout << endl;
-            cout << "-------------------------" << "Mini batch loss list" << "-------------------------" << endl;
-            for (int i1 = 0; i1 < miniBatchSize; i1++)
-            {
-                cout << "-------------------------" << "Sample " << i1 << "-------------------------" << endl;
-                vector<vector<float> > errorList = miniBatchErrorList.at(i1);
-                for (int i2 = 0; i2 < errorList.size(); i2++)
-                {
-                    vector<float> error = errorList.at(i2);
-                    for (int i3 = 0; i3 < error.size(); i3++)
-                    {
-                        cout << error.at(i3) << " ";                        
-                    }   
-                    cout << endl;
-                }   
-                cout << "-------------------------" << "end Sample " << i1 << "-------------------------" << endl;
-                cout << endl;
-            }
-            cout << "-------------------------" << "end Mini batch loss list" << "-------------------------" << endl;
-            cout << endl;
+            // // Debug mini batch list
+            // cout << endl;
+            // cout << "-------------------------" << "Mini batch loss list" << "-------------------------" << endl;
+            // for (int i1 = 0; i1 < miniBatchSize; i1++)
+            // {
+            //     cout << "-------------------------" << "Sample " << i1 << "-------------------------" << endl;
+            //     vector<vector<float> > errorList = miniBatchErrorList.at(i1);
+            //     for (int i2 = 0; i2 < errorList.size(); i2++)
+            //     {
+            //         vector<float> error = errorList.at(i2);
+            //         for (int i3 = 0; i3 < error.size(); i3++)
+            //         {
+            //             cout << error.at(i3) << " ";                        
+            //         }   
+            //         cout << endl;
+            //     }   
+            //     cout << "-------------------------" << "end Sample " << i1 << "-------------------------" << endl;
+            //     cout << endl;
+            // }
+            // cout << "-------------------------" << "end Mini batch loss list" << "-------------------------" << endl;
+            // cout << endl;
                      
             // Adjust Weights
             updateWeights(r, miniBatchAList, miniBatchErrorList);
 
-            // PrintWeight();
+            PrintWeight();
             PrintBias();
                         
             cout << "--------------------------------------------------" << "end Mini-batch " << miniBatchIndex << "--------------------------------------------------" << endl;
@@ -518,16 +518,16 @@ void ANN::updateWeights(float r,
         cout << "-------------------------" << "Layer " << layerIndex << "-------------------------" << endl;
 
         // Get Weight and Bias of this layer
-        vector<vector<float> > w = WList.at(layerIndex - 1);
+        vector<vector<float> > *w = &WList.at(layerIndex - 1);
         vector<float> *b = &bList.at(layerIndex - 1);
 
         // Summation of w and b update
         vector<vector<float> > wSum;
         vector<float> bSum;
 
-        int row = miniBatchErrorList.at(0).at(layerIndex - 1).size();  // Current layer neuron [m]
+        int row = miniBatchErrorList.at(0).at(layerIndex - 1).size();   // Current layer neuron [m]
         int column = miniBatchAList.at(0).at(layerIndex - 1).size();    // last layer neuron    [n]
-                                            // Weight               [m*n]
+                                                                        // Weight               [m*n]
         cout << "row * column = " << row << "*" << column << endl;
         
         for (int rowIndex = 0; rowIndex < row; rowIndex++)  // Initialize w[m*n] and b[m]
@@ -547,62 +547,46 @@ void ANN::updateWeights(float r,
             vector<float> a = aList.at(layerIndex - 1);
             vector<float> error = errorList.at(layerIndex - 1);
 
-            // Get current layer sum of w and b
-            vector<float> sampleB;
-
-            for (int neuronIndex = 0; neuronIndex < neuron[layerIndex]; neuronIndex++)   // loop every neuron
-            {
-                sampleB.push_back(error.at(neuronIndex));
-            }
-
+            // Add up sum
+            // cout << "W sum" << endl;
             for (int rowIndex = 0; rowIndex < row; rowIndex++)
             {
-                bSum.at(rowIndex) += sampleB.at(rowIndex);
+                for (int columnIndex = 0; columnIndex < column; columnIndex++)
+                {
+                    // w[m, n] = loss[m] * a[n]
+                    wSum.at(rowIndex).at(columnIndex) += error.at(rowIndex) * a.at(columnIndex);  // loss * a
+                    // cout << wSum.at(rowIndex).at(columnIndex) << " ";
+                }               
+                // cout << endl;
+
+                bSum.at(rowIndex) += error.at(rowIndex);    // loss
             }
+            // cout << endl;
         }
+
+        // cout << "original W and b" << endl;
+        // PrintWeight();
+        // PrintBias();
 
         // Update W and b
         for (int rowIndex = 0; rowIndex < row; rowIndex++)
         {
+            for (int columnIndex = 0; columnIndex < column; columnIndex++)
+            {
+                w->at(rowIndex).at(columnIndex) -= r / miniBatchAList.size() * wSum.at(rowIndex).at(columnIndex);  // loss * a
+            }     
+            
             b->at(rowIndex) -= r / miniBatchAList.size() * bSum.at(rowIndex);
         }
 
-        PrintBias();
+        // cout << "Updated W and b" << endl;
+        // PrintWeight();
+        // PrintBias();
 
         cout << "-------------------------" << "end Layer " << layerIndex << "-------------------------" << endl;
     }
 
     cout << "--------------------------------------------------" << "end Update Weight" << "--------------------------------------------------" << endl;
-
-    // for (int layerIndex = layer - 1; layerIndex >= 1; layerIndex--)   // l = L to 2
-    // {
-    //     for (unsigned n = 0; n < neuron[layerIndex]; n++)   // loop every neuron
-    //     {
-    //         float sumW = 0.0;
-    //         float sumB = 0.0;
-            
-    //         vector<float> aListT = layerIndex == 1 ? sample : aList.at(layerIndex - 2); // last layer a
-    //                                                                                     // sample or a(l-1)
-
-    //         for (int a = 0; a < aListT.size(); a++)
-    //         {
-    //             sumW += aListT.at(a) * errorsList.at(layerIndex - 1).at(n);  // sum += error * last layer a
-    //         }
-
-    //         vector<vector<float> > layerWeights = WList.at(layerIndex - 1);
-
-    //         for (int w = 0; w < layerWeights.size(); w++)
-    //         {
-    //             vector<float> nerousWeights = WList.at(layerIndex - 1).at(w);
-    //             for (int nw = 0; nw < nerousWeights.size(); nw++)
-    //             {
-    //                 WList.at(layerIndex - 1).at(w).at(nw) -= r / m * sumW;
-    //                 // bList.at(layerIndex - 1).at(w) -= 
-    //             }
-    //         }
-
-    //     }
-    // }
 }
 
 void ANN::clearList() {
