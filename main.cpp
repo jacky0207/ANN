@@ -47,7 +47,7 @@ int main(int argc, const char * argv[]) {
 
     // Test ann class
     ANN ann(2, 16, 12);
-    ann.Train(X_train, y_train, 0.01, 4, 5);
+    ann.Train(X_train, y_train, 0.01, 8, 3);
 
     return 0;
 }

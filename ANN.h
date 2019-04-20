@@ -30,19 +30,34 @@ private:
                                             // a = (a0
                                             //      ...
                                             //      an)
+     std::vector<std::vector<float> > inputSumList; // input summation before activation function layer 2-L
+    // a = (a0
+    //      ...
+    //      an)
+
+    std::vector<std::vector<float> > errorsList; // input summation before activation function layer 2-L
+    // a = (a0
+    //      ...
+    //      an)
 
 private:
     void InitializeW(std::vector<std::vector<float> > X);
 
-    void FeedForward(int l, std::vector<float> sample);
+    void FeedForward(int l, std::vector<float> sample, int indexX);
     std::vector<float> SigmoidActivation(int l, std::vector<float> sample);
 
-    void Error(int layer);
+
     void backPropagation(int l);
 
     void LossFunction(std::vector<float> trueY, std::vector<float> predictY); // C = (C1
                                                                                     //      ...
-                                                                                    //      Cn)
+    std::vector<float> lastLayerError(int trueYLabel);                                                       //      Cn)
+    std::vector<float> Error(int layer, std::vector<float> error);
+    // void updateWeights(float r, std::vector<float> sample);
+    void updateWeights(float r, int m, std::vector<float> sample);  // m = number of sample
+    float calculate_total_error(int trueYLabel);
+    void clearList();
+
 
     // Save and load
     void SaveWeight();
@@ -53,7 +68,8 @@ private:
     void PrintWeight();
     void PrintBias();
     void PrintActivation();
-
+    void PrintinputSumList();
+    void PrintErrorList();
 public:
     explicit ANN(int hiddenLayer, ...);    // Set the number of layers
                                         // and the number of neurons in each layer
