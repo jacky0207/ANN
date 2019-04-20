@@ -60,7 +60,6 @@ private:
     float calculate_total_error(int trueYLabel);
     void clearList();
 
-
     // Save and load
     void SaveWeight();
     void LoadWeight();
@@ -81,6 +80,10 @@ public:
                float r,
                int miniBatchSize,   // number of mini-batch = total number of dataset / mini-batch size
                int epoch);
+
+    // Compare result
+    void predict(std::vector<std::vector<float> > X,
+                 std::vector<float> Y);
 };
 
 

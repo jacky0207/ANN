@@ -103,6 +103,12 @@ void ANN::Train(vector<vector<float> > X,
 
     // int runCount = 0;
 
+    // Output data
+    // Store list of all samples in the mini-batch
+    // sample->layer->value
+    vector<vector<vector<float> > > miniBatchErrorList; // all error list in a mini-batch
+    vector<vector<vector<float> > > miniBatchAList; // all a list in a mini-batch
+
     // numberOfMiniBatch * miniBatchSize = X.size()
     for (int epochIndex = 0; epochIndex < epoch; ++epochIndex)  // Loop epoch
     {
@@ -116,10 +122,11 @@ void ANN::Train(vector<vector<float> > X,
             PrintWeight();
             PrintBias();
 
-            // Store list of all samples in the mini-batch
-            // sample->layer->value
-            vector<vector<vector<float> > > miniBatchErrorList; // all error list in a mini-batch
-            vector<vector<vector<float> > > miniBatchAList; // all a list in a mini-batch
+            if (miniBatchErrorList.size() != 0)
+            {
+                miniBatchErrorList.clear();
+                miniBatchAList.clear();
+            }
 
             for (int correlatedIndexX = 0; correlatedIndexX < miniBatchSize; ++correlatedIndexX)    // Loop samples in mini-batch
             {
@@ -143,14 +150,14 @@ void ANN::Train(vector<vector<float> > X,
 
                 float totalError = calculate_total_error(Y.at(indexX));
 
-                // cout << "Sample : " << indexX << " ; Total Error : " << totalError << " in epoch : " <<  runCount << endl;
+                cout << "Sample : " << indexX << " ; Total Error : " << totalError << " in epoch : " <<  epochIndex << endl;
 
                 // Find Last layer error
                 vector<float> error = lastLayerError(Y.at(indexX));
                 errorsList.insert(errorsList.begin(), error);
 
                 // Find Hidden layer error
-                for (int layerIndex = layer - 1; layerIndex > 1; layerIndex--) {
+                for (int layerIndex = layer - 1; layerIndex > 1; layerIndex--) {    // l = L-1 to 2
                     // cout << "Hidden layer error : " << error.size() << endl;
                     vector<float> layerError = Error(layerIndex, error);
                     errorsList.insert(errorsList.begin(), layerError);
@@ -222,9 +229,12 @@ void ANN::Train(vector<vector<float> > X,
 
     cout << "--------------------------------------------------" << "end Train" << "--------------------------------------------------" << endl;
 
-    cout << "After" << endl;
+
+    cout << "*******************************************************" << "Trained result" << "*******************************************************" << endl;
     PrintWeight();
     PrintBias();
+
+    cout << "Final loss";
 
     // Start train
 //     while (runCount < epoch) {
@@ -454,7 +464,7 @@ vector<float> ANN::lastLayerError(int trueY) {
 }
 
 
-vector<float> ANN::Error(int layer, vector<float> error) {
+vector<float> ANN::Error(int layer, vector<float> error) {  // l = L-1 to 2
     vector<float> LayerErrors;
     int nextLayerNeuronNumbers = neuron[layer];   // last layer neuron number
     int currentLayerNeronNumbers = neuron[layer - 1];
@@ -554,6 +564,7 @@ void ANN::updateWeights(float r,
 
             // Add up sum
             // cout << "W sum" << endl;
+            cout << "Error" << endl;
             for (int rowIndex = 0; rowIndex < row; rowIndex++)
             {
                 for (int columnIndex = 0; columnIndex < column; columnIndex++)
@@ -561,12 +572,13 @@ void ANN::updateWeights(float r,
                     // w[m, n] = loss[m] * a[n]
                     wSum.at(rowIndex).at(columnIndex) += error.at(rowIndex) * a.at(columnIndex);  // loss * a
                     // cout << wSum.at(rowIndex).at(columnIndex) << " ";
+                    cout << error.at(rowIndex) * a.at(columnIndex) << " ";
                 }               
-                // cout << endl;
+                cout << endl;
 
                 bSum.at(rowIndex) += error.at(rowIndex);    // loss
             }
-            // cout << endl;
+            cout << endl;
             // cout << endl;
         }
 
@@ -626,6 +638,23 @@ void ANN::clearList() {
     if (errorsList.size() != 0) {
         errorsList.clear();
     }
+}
+
+// Inference
+void ANN::predict(std::vector<std::vector<float> > X, std::vector<float> Y) {
+    for (int indexX = 0; indexX < 3; indexX++) {
+        clearList();
+        for (int layerIndex = 1; layerIndex < layer; layerIndex++)  // Loop every layer except input layer
+        {
+            FeedForward(layerIndex, X.at(indexX), indexX);
+        }
+        PrintActivation();
+
+        cout << "Number " << indexX << " data is " <<  Y.at(indexX) << endl;
+    }
+
+    PrintWeight();
+    PrintBias();
 }
 
 
