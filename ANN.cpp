@@ -466,7 +466,7 @@ vector<float> ANN::lastLayerError(int trueY) {
 
 vector<float> ANN::Error(int layer, vector<float> error) {  // l = L-1 to 2
     vector<float> LayerErrors;
-    int nextLayerNeuronNumbers = neuron[layer];   // last layer neuron number
+    int nextLayerNeuronNumbers = neuron[layer];
     int currentLayerNeronNumbers = neuron[layer - 1];
 
 //    cout << "Curent layer is: " << layer - 1 << " size is " << currentLayerNeronNumbers << endl;
@@ -478,14 +478,20 @@ vector<float> ANN::Error(int layer, vector<float> error) {  // l = L-1 to 2
 //
 //    cout << "error  size  is: " << error.size() <<  endl;
 
+    // current = 16, next = 12
+    // next w = 12 * 16
+    // next wT = 16 * 12
+    // next loss = 12 * 1
+
+    // a = 16 * 1
+    // wTLoss = 16 * 12 and 12 * 1 -> 16 * 1
 
     // Transpose Vector
     vector<vector<float> > layerWT = layerW;
-    transpose(layerWT);
+    transpose(layerWT); // 16 * 12
 //
 //    cout << "layerW  size  is: " << layerW.size() <<  endl;
 //    cout << "layerWT  size  is: " << layerWT.size() <<  endl;
-
 
     for (int c = 0; c < currentLayerNeronNumbers; c++) {
 
@@ -564,7 +570,7 @@ void ANN::updateWeights(float r,
 
             // Add up sum
             // cout << "W sum" << endl;
-            cout << "Error" << endl;
+            // cout << "Error" << endl;
             for (int rowIndex = 0; rowIndex < row; rowIndex++)
             {
                 for (int columnIndex = 0; columnIndex < column; columnIndex++)
@@ -572,33 +578,33 @@ void ANN::updateWeights(float r,
                     // w[m, n] = loss[m] * a[n]
                     wSum.at(rowIndex).at(columnIndex) += error.at(rowIndex) * a.at(columnIndex);  // loss * a
                     // cout << wSum.at(rowIndex).at(columnIndex) << " ";
-                    cout << error.at(rowIndex) * a.at(columnIndex) << " ";
+                    // cout << error.at(rowIndex) * a.at(columnIndex) << " ";
                 }               
-                cout << endl;
+                // cout << endl;
 
                 bSum.at(rowIndex) += error.at(rowIndex);    // loss
             }
-            cout << endl;
+            // cout << endl;
             // cout << endl;
         }
 
-        cout << "wSum" << endl;
-        for (int rowIndex = 0; rowIndex < row; rowIndex++)
-        {
-            for (int columnIndex = 0; columnIndex < column; columnIndex++)
-            {
-                cout << wSum.at(rowIndex).at(columnIndex) << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
+        // cout << "wSum" << endl;
+        // for (int rowIndex = 0; rowIndex < row; rowIndex++)
+        // {
+        //     for (int columnIndex = 0; columnIndex < column; columnIndex++)
+        //     {
+        //         cout << wSum.at(rowIndex).at(columnIndex) << " ";
+        //     }
+        //     cout << endl;
+        // }
+        // cout << endl;
 
-        cout << "bSum" << endl;
-        for (int rowIndex = 0; rowIndex < row; rowIndex++)
-        {
-            cout << bSum.at(rowIndex) << " ";
-        }
-        cout << endl;
+        // cout << "bSum" << endl;
+        // for (int rowIndex = 0; rowIndex < row; rowIndex++)
+        // {
+        //     cout << bSum.at(rowIndex) << " ";
+        // }
+        // cout << endl;
 
         // cout << "original W and b" << endl;
         // PrintWeight();
@@ -616,8 +622,8 @@ void ANN::updateWeights(float r,
         }
 
         cout << "Updated W and b" << endl;
-        PrintWeight();
-        PrintBias();
+        // PrintWeight();
+        // PrintBias();
 
         cout << "-------------------------" << "end Layer " << layerIndex << "-------------------------" << endl;
     }
