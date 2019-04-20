@@ -54,7 +54,9 @@ private:
     std::vector<float> lastLayerError(int trueYLabel);                                                       //      Cn)
     std::vector<float> Error(int layer, std::vector<float> error);
     // void updateWeights(float r, std::vector<float> sample);
-    void updateWeights(float r, int m, std::vector<float> sample);  // m = number of sample
+    void updateWeights(float r, 
+                        std::vector<std::vector<std::vector<float> > > miniBatchAList, 
+                        std::vector<std::vector<std::vector<float> > > miniBatchErrorList);
     float calculate_total_error(int trueYLabel);
     void clearList();
 
