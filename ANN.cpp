@@ -33,7 +33,7 @@ float sigmoid_derivative(float x) {
     return fx * (1 - fx);
 }
 
-float softmax(float z, vector<vector<float>> inputSumList, int layer) {
+float softmax(float z, vector<vector<float> > inputSumList, int layer) {
 
     float sum = 0.0;
     for(int i = 0 ; i < inputSumList.at(layer).size(); i++) {\
@@ -342,7 +342,7 @@ void ANN::InitializeW(vector<vector<float> > X) {
                 float min = 0.1;
                 float max = 1;
                 float num = (max - min) * rand() / (RAND_MAX + 1.0) + min;
-                wRow.push_back(num);
+                wRow.push_back(num/50);
                 // if (layerIndex == 3) {
                 //    cout << "init layer: " << layerIndex << " , neuronIndex is " << neuronIndex << " , num is: " << num << endl;
                 // }
@@ -421,8 +421,8 @@ vector<float> ANN::SigmoidActivation(int l, vector<float> sample) {
         for (int previousAIndex = 0;
              previousAIndex < previousA.size(); previousAIndex++)   // every previous layer neuron
         {
-            if(l-1 > 0)
-                cout << "layer : " << l << " Nerous: " << neuronIndex << " weight: " <<  neuronWeight.at(previousAIndex) << " *  input " << previousA.at(previousAIndex) << endl;
+            // if(l-1 > 0)
+            //     cout << "layer : " << l << " Nerous: " << neuronIndex << " weight: " <<  neuronWeight.at(previousAIndex) << " *  input " << previousA.at(previousAIndex) << endl;
 
             summation += neuronWeight.at(previousAIndex) * previousA.at(previousAIndex);
 
@@ -430,6 +430,7 @@ vector<float> ANN::SigmoidActivation(int l, vector<float> sample) {
 
         z.push_back(summation);
         float activat = sigmoid(summation);
+        cout << "activat" << activat << endl;
         a.push_back(activat);
     }
 
