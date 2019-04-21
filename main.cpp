@@ -45,9 +45,12 @@ int main(int argc, const char * argv[]) {
     else
         cout << "Unable to open file" << '\n';
 
+    // X_train.erase(X_train.begin());
+    // y_train.erase(y_train.begin());
+
     // Test ann class
     ANN ann(2, 16, 12);
-    ann.Train(X_train, y_train, 5, 4, 1);
+    ann.Train(X_train, y_train, 5, 1, 1);
     ann.predict(X_train, y_train);
 
     return 0;

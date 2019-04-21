@@ -481,13 +481,50 @@ vector<float> ANN::lastLayerError(int trueY) {
 
 vector<float> ANN::Error(int layer, vector<float> error) {  // l = L-1 to 2
     vector<float> LayerErrors;
-    int nextLayerNeuronNumbers = neuron[layer];
-    int currentLayerNeronNumbers = neuron[layer - 1];
+    int nextLayerNeuronNumbers = neuron[layer];         // [n]
+    int currentLayerNeronNumbers = neuron[layer - 1];   // [m]
 
 //    cout << "Curent layer is: " << layer - 1 << " size is " << currentLayerNeronNumbers << endl;
 //    cout << "Next layer size: " << nextLayerNeuronNumbers << endl;
 
-    vector<vector<float> > layerW = WList.at(layer - 1);    // W of current layer
+    // vector<vector<float> > layerW = WList.at(layer - 1);    // W of current layer
+    vector<vector<float> > nextLayerW = WList.at(layer - 1);    // W of next layer      [n*m]
+    // cout << "A" << endl;
+    // vector<float> nextLayerError = errorsList.at(layer);    // Loss of next layer   [n]
+    vector<float> nextLayerError = error;    // Loss of next layer   [n]
+    vector<float> layerZ = inputSumList.at(layer - 2);  // z of this layer          [m]
+
+    // nextLayerWT [m*n]
+    // nextLayerLoss [n*1]
+    // wTloss [m*1], z [m*1] => same dimension
+
+    // Calculate wTloss
+    vector<float> wTloss;
+
+    for (int currentLayerNeuronIndex = 0; currentLayerNeuronIndex < currentLayerNeronNumbers; currentLayerNeuronIndex++)    // Loop m
+    {
+        float sum = 0;
+
+        for (int nextLayerNeuronIndex = 0; nextLayerNeuronIndex < nextLayerNeuronNumbers; nextLayerNeuronIndex++)   // Loop n
+        {
+            // sum += w[n][m] + l[n]
+            sum += nextLayerW.at(nextLayerNeuronIndex).at(currentLayerNeuronIndex) + nextLayerError.at(nextLayerNeuronIndex);
+        }
+
+        wTloss.push_back(sum);
+    }
+
+    // Calculate this layer loss
+    vector<float> currentLayerError;
+
+    for (int currentLayerNeuronIndex = 0; currentLayerNeuronIndex < currentLayerNeronNumbers; currentLayerNeuronIndex++)    // Loop m
+    {
+        // error = wTl * sgmd(z)
+        currentLayerError.push_back(wTloss.at(currentLayerNeuronIndex) * sigmoid_derivative(layerZ.at(currentLayerNeuronIndex)));
+    }
+
+    // Return result
+    return currentLayerError;
 
 //    cout << "layerW  size  is: " << layerW.size() <<  endl;
 //
@@ -500,40 +537,41 @@ vector<float> ANN::Error(int layer, vector<float> error) {  // l = L-1 to 2
 
     // a = 16 * 1
     // wTLoss = 16 * 12 and 12 * 1 -> 16 * 1
+    // current loss = 16 * 1
 
     // Transpose Vector
-    vector<vector<float> > layerWT = layerW;
-    transpose(layerWT); // 16 * 12
+    // vector<vector<float> > layerWT = layerW;
+    // transpose(layerWT); // 16 * 12
 //
 //    cout << "layerW  size  is: " << layerW.size() <<  endl;
 //    cout << "layerWT  size  is: " << layerWT.size() <<  endl;
 
-    for (int c = 0; c < currentLayerNeronNumbers; c++) {
+//     for (int c = 0; c < currentLayerNeronNumbers; c++) {
 
-        double sum = 0.0;
+//         double sum = 0.0;
 
-        for (int n = 0; n < nextLayerNeuronNumbers; n++) {
+//         for (int n = 0; n < nextLayerNeuronNumbers; n++) {
 
-            vector<float> w = layerWT.at(c);
-//            cout << "n " << n << endl;
-//            cout << "w " << w.at(n) << endl;
-//            cout << "error " << error.at(n) << endl;
-            sum += w.at(n) * error.at(n);
-        }
+//             vector<float> w = layerWT.at(c);
+// //            cout << "n " << n << endl;
+// //            cout << "w " << w.at(n) << endl;
+// //            cout << "error " << error.at(n) << endl;
+//             sum += w.at(n) * error.at(n);
+//         }
 
-//        cout << " sum : " << sum << endl ;
-        vector<float> laySumList;
-        if (layer - 2 < 0) {
-            laySumList = inputSumList.at(0);
-        } else {
-            laySumList = inputSumList.at(layer - 2);
-        }
+// //        cout << " sum : " << sum << endl ;
+//         vector<float> laySumList;
+//         if (layer - 2 < 0) {
+//             laySumList = inputSumList.at(0);
+//         } else {
+//             laySumList = inputSumList.at(layer - 2);
+//         }
 
-//        cout << "laySumList  size  is: " << laySumList.size() <<  endl;
-        float error = sum * sigmoid_derivative(laySumList.at(c));
-        LayerErrors.push_back(error);
-    }
-    return LayerErrors;
+// //        cout << "laySumList  size  is: " << laySumList.size() <<  endl;
+//         float error = sum * sigmoid_derivative(laySumList.at(c));
+//         LayerErrors.push_back(error);
+//     }
+//     return LayerErrors;
 
 //    }
 }
