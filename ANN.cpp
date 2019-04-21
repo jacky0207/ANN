@@ -10,6 +10,9 @@
 #include <cmath>
 #include <stdarg.h>     /* va_list, va_start, va_arg, va_end */
 
+#include "iostream"
+#include "fstream"
+
 using namespace std;
 
 vector<int> labelToVector(int y) {
@@ -123,7 +126,7 @@ void ANN::Train(vector<vector<float> > X,
     {
         cout << "--------------------------------------------------" << "Epoch " << epochIndex << "--------------------------------------------------" << endl;
 
-        for (int miniBatchIndex = 0; miniBatchIndex < 1; ++miniBatchIndex)  // Loop mini-batch
+        for (int miniBatchIndex = 0; miniBatchIndex < numberOfMiniBatch; ++miniBatchIndex)  // Loop mini-batch
         {
             cout << "--------------------------------------------------" << "Mini-batch " << miniBatchIndex << "--------------------------------------------------" << endl;
 
@@ -162,6 +165,7 @@ void ANN::Train(vector<vector<float> > X,
                 cout << "Sample : " << indexX << " ; Total Error : " << totalError << " in epoch : " <<  epochIndex << endl;
 
                 // Find Last layer error
+                // cout << "indexX" << indexX << " trueY" << Y.at(indexX) << endl;
                 vector<float> error = lastLayerError(Y.at(indexX));
                 errorsList.insert(errorsList.begin(), error);
 
@@ -377,7 +381,7 @@ void ANN::InitializeW(vector<vector<float> > X) {
 
     for (int layerIndex = 1; layerIndex < layer; layerIndex++)  // l = 2-L, loop hidden layer
     {
-        bList.push_back(vector<float>(neuron[layerIndex], 1));
+        bList.push_back(vector<float>(neuron[layerIndex], -1));
     }
 
     // Debug b
@@ -430,7 +434,7 @@ vector<float> ANN::SigmoidActivation(int l, vector<float> sample) {
 
         z.push_back(summation);
         float activat = sigmoid(summation);
-        cout << "activat" << activat << endl;
+        // cout << "summation" << summation << endl;
         a.push_back(activat);
     }
 
@@ -741,6 +745,112 @@ void ANN::predict(std::vector<std::vector<float> > X, std::vector<float> Y) {
 
 //    PrintWeight();
 //    PrintBias();
+}
+
+void ANN::SaveWeight()
+{
+	ofstream myfile;
+
+    cout << "-------------------------" << "Save ANN structure" << "-------------------------" << endl;
+
+    myfile.open("config");  // layer and neuron in each layers
+
+    string config = "";
+
+    config += to_string(layer) + " ";   // layer
+
+    for (int layerIndex = 0; layerIndex < layer; layerIndex++)  // neuron
+    {
+        config += to_string(neuron[layerIndex]);
+
+        if (layerIndex != layer - 1)
+        {
+            config += " ";
+        }
+    }
+
+    myfile << config;
+
+    myfile.close();
+
+    cout << "-------------------------" << "Save Weight" << "-------------------------" << endl;
+
+    string path = "weight/";
+
+    // For each layer
+    for (int layerIndex = 1; layerIndex < layer; layerIndex++)
+    {
+        string fileName = "weight" + to_string(layerIndex) + ".txt";
+        string filePath = path + fileName;
+
+        myfile.open(filePath);
+
+        // Convert W to text
+        vector<vector<float> > w = WList.at(layerIndex - 1);
+        string weight = "";
+
+        for (int row = 0; row < w.size(); row++)
+        {
+            vector<float> rowW = w.at(row);
+
+            for (int column = 0; column < rowW.size(); column++)
+            {
+                weight += to_string(rowW.at(column));  // value
+
+                if (column != rowW.size() - 1)  // spliter
+                {
+                    weight += " ";
+                }
+            }
+            
+            weight += "\n"; // row spliter
+        }        
+
+        myfile << weight;
+
+        myfile.close();
+    }
+
+	cout << "-------------------------" << "End Save Weight" << "-------------------------\n" << endl;
+
+
+    cout << "-------------------------" << "Save Bias" << "-------------------------" << endl;
+
+    path = "bias/";
+
+    // For each layer
+    for (int layerIndex = 1; layerIndex < layer; layerIndex++)
+    {
+        string fileName = "bias" + to_string(layerIndex) + ".txt";
+        string filePath = path + fileName;
+
+        myfile.open(filePath);
+
+        // Convert W to text
+        vector<float> b = bList.at(layerIndex - 1);
+        string bias = "";
+
+        for (int column = 0; column < b.size(); column++)
+        {
+            bias += to_string(b.at(column));  // value
+
+            if (column != b.size() - 1)  // spliter
+            {
+                bias += " ";
+            }
+        }        
+
+        myfile << bias;
+
+        myfile.close();
+    }
+
+	cout << "-------------------------" << "End Save Bias" << "-------------------------\n" << endl;
+}
+
+void ANN::LoadWeight()
+{
+
 }
 
 

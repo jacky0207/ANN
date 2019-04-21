@@ -19,7 +19,7 @@ int main(int argc, const char * argv[]) {
     vector< vector<float> > X_train;
     vector<float> y_train;
 
-    ifstream myfile("data/train_small.txt");
+    ifstream myfile("data/test.txt");
 
     if (myfile.is_open())
     {
@@ -50,8 +50,16 @@ int main(int argc, const char * argv[]) {
 
     // Test ann class
     ANN ann(2, 16, 12);
-    ann.Train(X_train, y_train, 5, 1, 1);
+    ann.Train(X_train, y_train, 0.1, 1, 1);
     ann.predict(X_train, y_train);
+    
+    // Save weight
+    ann.SaveWeight();
+
+    // Load weight
+    ANN ann2(2, 16, 12);
+    ann2.LoadWeight();
+    ann2.predict(X_train, y_train);
 
     return 0;
 }

@@ -60,10 +60,6 @@ private:
     float calculate_total_error(int trueYLabel);
     void clearList();
 
-    // Save and load
-    void SaveWeight();
-    void LoadWeight();
-
     // Debug
     void PrintNeuron();
     void PrintWeight();
@@ -84,6 +80,11 @@ public:
     // Compare result
     void predict(std::vector<std::vector<float> > X,
                  std::vector<float> Y);
+
+    // Save and load
+    void SaveWeight();  // Save automatically
+                        // Each layer each file
+    void LoadWeight();  // Load if layer and neuron match 
 };
 
 
