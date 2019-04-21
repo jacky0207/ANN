@@ -4,9 +4,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/jackylam/Documents/GitHub/COMP3046GroupProject/main.cpp" "/Users/jackylam/Documents/GitHub/COMP3046GroupProject/cmake-build-debug/CMakeFiles/COMP3046GroupProject.dir/main.cpp.o"
+  "C:/Users/kalok/Desktop/ANN/ANN.cpp" "C:/Users/kalok/Desktop/ANN/cmake-build-debug/CMakeFiles/COMP3046GroupProject.dir/ANN.cpp.obj"
+  "C:/Users/kalok/Desktop/ANN/Matrix.cpp" "C:/Users/kalok/Desktop/ANN/cmake-build-debug/CMakeFiles/COMP3046GroupProject.dir/Matrix.cpp.obj"
+  "C:/Users/kalok/Desktop/ANN/main.cpp" "C:/Users/kalok/Desktop/ANN/cmake-build-debug/CMakeFiles/COMP3046GroupProject.dir/main.cpp.obj"
   )
-set(CMAKE_CXX_COMPILER_ID "AppleClang")
+set(CMAKE_CXX_COMPILER_ID "MSVC")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

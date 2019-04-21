@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/kalok/Desktop/ANN/ANN.cpp
+ANN.h
+C:/Users/kalok/Desktop/ANN/ANN.h
+time.h
+-
+iostream
+C:/Users/kalok/Desktop/ANN/iostream
+string
+C:/Users/kalok/Desktop/ANN/string
+vector
+-
+cmath
+-
+stdarg.h
+-
+
+C:/Users/kalok/Desktop/ANN/ANN.h
+vector
+-
+algorithm
+-
+
