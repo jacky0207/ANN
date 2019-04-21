@@ -49,16 +49,16 @@ int main(int argc, const char * argv[]) {
     // y_train.erase(y_train.begin());
 
     // Test ann class
-    ANN ann(2, 16, 12);
-    ann.Train(X_train, y_train, 0.1, 1, 1);
-    ann.predict(X_train, y_train);
+    // ANN ann(2, 16, 12);
+    // ann.Train(X_train, y_train, 0.1, 1, 1);
+    // ann.predict(X_train, y_train);
     
-    // Save weight
-    ann.SaveWeight();
+    // // Save weight
+    // ann.Save();
 
     // Load weight
     ANN ann2(2, 16, 12);
-    ann2.LoadWeight();
+    ann2.Load();
     ann2.predict(X_train, y_train);
 
     return 0;

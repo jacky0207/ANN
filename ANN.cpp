@@ -12,6 +12,8 @@
 
 #include "iostream"
 #include "fstream"
+#include <sstream>
+#include <iterator>
 
 using namespace std;
 
@@ -747,13 +749,20 @@ void ANN::predict(std::vector<std::vector<float> > X, std::vector<float> Y) {
 //    PrintBias();
 }
 
-void ANN::SaveWeight()
+void ANN::Save()
 {
-	ofstream myfile;
+	SaveConfig();
+    SaveWeight();
+    SaveBias();    
+}
 
+void ANN::SaveConfig()
+{
     cout << "-------------------------" << "Save ANN structure" << "-------------------------" << endl;
 
-    myfile.open("config");  // layer and neuron in each layers
+    ofstream myfile;
+
+    myfile.open("config.txt");  // layer and neuron in each layers
 
     string config = "";
 
@@ -772,9 +781,13 @@ void ANN::SaveWeight()
     myfile << config;
 
     myfile.close();
+}
 
+void ANN::SaveWeight()
+{
     cout << "-------------------------" << "Save Weight" << "-------------------------" << endl;
 
+    ofstream myfile;
     string path = "weight/";
 
     // For each layer
@@ -812,11 +825,14 @@ void ANN::SaveWeight()
     }
 
 	cout << "-------------------------" << "End Save Weight" << "-------------------------\n" << endl;
+}
 
-
+void ANN::SaveBias()
+{
     cout << "-------------------------" << "Save Bias" << "-------------------------" << endl;
 
-    path = "bias/";
+    ofstream myfile;
+    string path = "bias/";
 
     // For each layer
     for (int layerIndex = 1; layerIndex < layer; layerIndex++)
@@ -848,9 +864,163 @@ void ANN::SaveWeight()
 	cout << "-------------------------" << "End Save Bias" << "-------------------------\n" << endl;
 }
 
+void ANN::Load()
+{
+    LoadConfig();
+    LoadWeight();
+    LoadBias();
+}
+
+void ANN::LoadConfig()
+{
+    cout << "-------------------------" << "Load Config" << "-------------------------" << endl;
+
+    ifstream myfile;    
+	myfile.open ("config.txt");
+	
+    // Save before
+	if (myfile.is_open())
+	{
+        string config;
+
+		// Set layer and neuron
+		while(getline(myfile, config))
+		{
+            istringstream iss(config);
+            istream_iterator<float> beg(iss), end;
+
+            vector<float> rowData(beg, end); // string line to vector
+
+            layer = rowData[0];  // Overwrite layer
+
+            neuron = new int[layer];   // Overwrite neuron list
+
+            for(int column = 1; column < rowData.size(); column++)  // Loop neuron column
+            {
+                // cout << tokens.at(i) << " ";
+                neuron[column - 1] = rowData[column];   // Overwrite neuron number
+            }
+		}
+
+        // Print result
+        cout << "Number of layer: " << layer << endl;
+
+        cout << "Number of neuron: ";
+        for (int neuronIndex = 0; neuronIndex < layer; neuronIndex++)
+        {
+            cout << neuron[neuronIndex] << " ";
+        }
+        cout << endl;
+
+		myfile.close();
+
+		cout << "-------------------------" << "End Load Config" << "-------------------------\n" << endl;
+	}
+    // No save
+	else
+	{
+		cout << "config.txt not exist" << endl;
+		return;
+	}
+}
+
 void ANN::LoadWeight()
 {
+    cout << "-------------------------" << "Load Weight" << "-------------------------\n" << endl;
+    
+    ifstream myfile;
+    string path = "weight/";
 
+    for (int layerIndex = 1; layerIndex < layer; layerIndex++)
+    {
+        string fileName = "weight" + to_string(layerIndex) + ".txt";
+        string filePath = path + fileName;
+
+        myfile.open(filePath);
+
+        // weight file exist
+        if (myfile.is_open())
+        {
+            string rowDataString;
+            vector<vector<float> > w;
+
+            // Set layer and neuron
+            while(getline(myfile, rowDataString))
+            {
+                istringstream iss(rowDataString);
+                istream_iterator<float> beg(iss), end;
+
+                vector<float> rowData(beg, end); // string line to vector
+
+                // push row data vector to weight list
+                w.push_back(rowData);
+            }
+
+            // push w to wList
+            WList.push_back(w);
+        }
+        // not exist
+        else
+        {
+            cout << fileName << " not exist" << endl;
+            __throw_logic_error("File missing");
+        }
+
+        myfile.close();
+    }
+
+    // Print result
+    PrintWeight();
+
+    cout << "-------------------------" << "End Load weight" << "-------------------------\n" << endl;
+}
+
+void ANN::LoadBias()
+{
+    cout << "-------------------------" << "Load Bias" << "-------------------------\n" << endl;
+    
+    ifstream myfile;
+    string path = "bias/";
+
+    for (int layerIndex = 1; layerIndex < layer; layerIndex++)
+    {
+        string fileName = "bias" + to_string(layerIndex) + ".txt";
+        string filePath = path + fileName;
+
+        myfile.open(filePath);
+
+        // weight file exist
+        if (myfile.is_open())
+        {
+            string rowDataString;
+            vector<float> b;
+
+            // Set layer and neuron
+            while(getline(myfile, rowDataString))
+            {
+                istringstream iss(rowDataString);
+                istream_iterator<float> beg(iss), end;
+
+                vector<float> rowData(beg, end); // string line to vector
+
+                // push w to wList
+                bList.push_back(rowData);
+            }
+        }
+        // not exist
+        else
+        {
+            cout << fileName << " not exist" << endl;
+            __throw_logic_error("File missing");
+        }
+
+        myfile.close();
+    }
+
+    // Print result
+    PrintBias();
+
+    cout << "-------------------------" << "End Load bias" << "-------------------------\n" << endl;
 }
 
 
