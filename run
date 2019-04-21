@@ -1,0 +1,3 @@
+g++ main.cpp ANN.cpp
+./a.out > train.txt
+open -a "Visual Studio Code" train.txt
