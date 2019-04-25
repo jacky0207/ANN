@@ -1,3 +1,0 @@
-C:/Users/kalok/Desktop/ANN/cmake-build-debug/CMakeFiles/COMP3046GroupProject.dir
-C:/Users/kalok/Desktop/ANN/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/kalok/Desktop/ANN/cmake-build-debug/CMakeFiles/rebuild_cache.dir
