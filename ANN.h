@@ -43,21 +43,28 @@ private:
 private:
     void InitializeW(std::vector<std::vector<float> > X);
 
-    void FeedForward(int l, std::vector<float> sample, int indexX);
-    std::vector<float> SigmoidActivation(int l, std::vector<float> sample);
+    // void FeedForward(int l, std::vector<float> sample, int indexX);
+    // std::vector<float> SigmoidActivation(int l, std::vector<float> sample);
+    // Changes aList and zList to local
+    // Every sample has its own aList and zList
+    void FeedForward(int l, std::vector<float> sample, int indexX, std::vector<std::vector<float> > &aList, std::vector<std::vector<float> > &inputSumList);
+    std::vector<float> SigmoidActivation(int l, std::vector<float> sample, std::vector<std::vector<float> > &aList, std::vector<std::vector<float> > &inputSumList);
 
 
     void backPropagation(int l);
 
     void LossFunction(std::vector<float> trueY, std::vector<float> predictY); // C = (C1
                                                                                     //      ...
-    std::vector<float> lastLayerError(int trueYLabel);                                                       //      Cn)
-    std::vector<float> Error(int layer, std::vector<float> error);
+    // std::vector<float> lastLayerError(int trueYLabel);                                                       //      Cn)
+    std::vector<float> lastLayerError(int trueYLabel, std::vector<std::vector<float> > aList, std::vector<std::vector<float> > inputSumList);                                                       //      Cn)
+    // std::vector<float> Error(int layer, std::vector<float> error);
+    std::vector<float> Error(int layer, std::vector<float> error, std::vector<std::vector<float> > inputSumList);
     // void updateWeights(float r, std::vector<float> sample);
     void updateWeights(float r, 
                         std::vector<std::vector<std::vector<float> > > miniBatchAList, 
                         std::vector<std::vector<std::vector<float> > > miniBatchErrorList);
-    float calculate_total_error(int trueYLabel);
+    // float calculate_total_error(int trueYLabel);
+    float calculate_total_error(int trueYLabel, std::vector<std::vector<float> > aList);
     void clearList();
 
     // Save and load sub function

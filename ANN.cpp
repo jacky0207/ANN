@@ -146,8 +146,20 @@ void ANN::Train(vector<vector<float> > X,
                 miniBatchAList.clear();
             }
 
+            // Multiple thread with the samples in a mini-batch
+            // Samples under the same mini-batch use the same weight
+            // Calculate current layer a and loss in parallel
+            // Push to the miniBatchList in serial
+
+            #  pragma omp parallel for num_threads(1) \
+                shared(miniBatchAList, miniBatchErrorList, miniBatchSize, miniBatchIndex, layer, X, Y) \
+                private(aList, inputSumList, errorsList)
             for (int correlatedIndexX = 0; correlatedIndexX < miniBatchSize; ++correlatedIndexX)    // Loop samples in mini-batch
             {
+                std::vector<std::vector<float> > aList; // activation sgm(z) layer 2-L
+                std::vector<std::vector<float> > inputSumList; // z of layer 2-L
+                std::vector<std::vector<float> > errorsList; // input summation before activation function layer 2-L
+
                 int indexX = miniBatchIndex * miniBatchSize + correlatedIndexX; // actual index of X
                 cout << "Index X: " << indexX << endl;
 
@@ -157,39 +169,61 @@ void ANN::Train(vector<vector<float> > X,
 
                 for (int layerIndex = 1; layerIndex < layer; layerIndex++)  // Loop every layer except input layer
                 {
-                    FeedForward(layerIndex, X.at(indexX), indexX);
+                    // FeedForward(layerIndex, X.at(indexX), indexX);
+                    FeedForward(layerIndex, X.at(indexX), indexX, aList, inputSumList);
                     // cout << "processing layer : " << layerIndex << endl;
                 }
+
+                // To test global a & z to local
+                // cout << "Test a and z" << endl;
+                // cout << "global Alist: " << this->aList.size() << endl;
+                // cout << "local Alist: " << aList.size() << endl;
+                // cout << "global zlist: " << this->inputSumList.size() << endl;
+                // cout << "local zlist: " << inputSumList.size() << endl;
 
                 // PrintActivation();            
                 // PrintBias();
 
 //                cout << "-------------------------" << "end Initialize a" << "-------------------------" << endl;
 
-                float totalError = calculate_total_error(Y.at(indexX));
+                // float totalError = calculate_total_error(Y.at(indexX));
+                float totalError = calculate_total_error(Y.at(indexX), aList);
 
                 cout << "Sample : " << indexX << " ; Total Error : " << totalError << " in epoch : " <<  epochIndex << endl;
 
                 // Find Last layer error
                 // cout << "indexX" << indexX << " trueY" << Y.at(indexX) << endl;
-                vector<float> error = lastLayerError(Y.at(indexX));
+                vector<float> error = lastLayerError(Y.at(indexX), aList, inputSumList);
                 errorsList.insert(errorsList.begin(), error);
+
+                // cout << "Test error" << endl;
+                // cout << "global error: " << this->errorsList.size() << endl;
+                // cout << "local error: " << errorsList.size() << endl;
 
                 // Find Hidden layer error
                 for (int layerIndex = layer - 1; layerIndex > 1; layerIndex--) {    // l = L-1 to 2
                     // cout << "Hidden layer error : " << error.size() << endl;
-                    vector<float> layerError = Error(layerIndex, error);
+                    // vector<float> layerError = Error(layerIndex, error);
+                    vector<float> layerError = Error(layerIndex, error, inputSumList);
                     errorsList.insert(errorsList.begin(), layerError);
                     error = layerError;
                 }
+
+                // cout << "Test error" << endl;
+                // cout << "global error: " << this->errorsList.size() << endl;
+                // cout << "local error: " << errorsList.size() << endl;
 
                 // Push the input sample for update weight use first
                 // m samples have m input
                 aList.insert(aList.begin(), X.at(indexX));
 
-                // Store list to temp list
-                miniBatchAList.push_back(aList);
-                miniBatchErrorList.push_back(errorsList);
+                // Store miniBatchList in serial due to the arrange of dataset
+                // May not match between alist and errorlist
+                {
+                    // Store list to temp list
+                    miniBatchAList.push_back(aList);
+                    miniBatchErrorList.push_back(errorsList);
+                }
             }
 
             // // Debug mini batch list
@@ -407,18 +441,22 @@ void ANN::InitializeW(vector<vector<float> > X) {
 }
 
 // --------------------------------------------------------------------------- Feed Forward Function ---------------------------------------------------------------------------
-void ANN::FeedForward(int l, vector<float> sample, int indexX) {
-    vector<float> a = SigmoidActivation(l, sample);
-    aList.push_back(a);
+// void ANN::FeedForward(int l, vector<float> sample, int indexX) {
+void ANN::FeedForward(int l, vector<float> sample, int indexX, vector<vector<float> > &aList, vector<vector<float> > &inputSumList) {
+    vector<float> a = SigmoidActivation(l, sample, aList, inputSumList);
+    aList.push_back(a); // push to passed ref
 }
 
-vector<float> ANN::SigmoidActivation(int l, vector<float> sample) {
+// vector<float> ANN::SigmoidActivation(int l, vector<float> sample) {
+vector<float> ANN::SigmoidActivation(int l, vector<float> sample, vector<vector<float> > &aList, vector<vector<float> > &inputSumList) {
     vector<float> a, z, previousA, b;
     vector<vector<float> > w;
 
     // Retrieve w, previous a and b
     w = WList.at(l - 1);
 
+    // cout << "Layer: " << l << endl;
+    // cout << "l == 1: " << (l == 1 ? "true" : "false") << endl;
     previousA = l == 1 ? sample : aList.at(l - 2); // get sample or previous a
     b = bList.at(l - 1);
 
@@ -427,14 +465,17 @@ vector<float> ANN::SigmoidActivation(int l, vector<float> sample) {
     for (int neuronIndex = 0; neuronIndex < w.size(); neuronIndex++)    // every neuron
     {
         vector<float> neuronWeight = w.at(neuronIndex);
+                // cout << "w ok" << endl;
 
         float summation = 0;    // summation
 
         summation += b.at(neuronIndex);
+                // cout << "b ok" << endl;
 
         for (int previousAIndex = 0;
              previousAIndex < previousA.size(); previousAIndex++)   // every previous layer neuron
         {
+            // cout << previousAIndex << " AND " << previousA.size() << endl;
             // if(l-1 > 0)
             //     cout << "layer : " << l << " Nerous: " << neuronIndex << " weight: " <<  neuronWeight.at(previousAIndex) << " *  input " << previousA.at(previousAIndex) << endl;
 
@@ -448,8 +489,7 @@ vector<float> ANN::SigmoidActivation(int l, vector<float> sample) {
         a.push_back(activat);
     }
 
-
-    inputSumList.push_back(z);
+    inputSumList.push_back(z);  // push to passed ref
 
 
     // al = sgm(zl)
@@ -464,7 +504,7 @@ vector<float> ANN::SigmoidActivation(int l, vector<float> sample) {
 }
 // --------------------------------------------------------------------------- Feed Forward Function ---------------------------------------------------------------------------
 
-float ANN::calculate_total_error(int trueYLabel) {
+float ANN::calculate_total_error(int trueYLabel, vector<vector<float> > aList) {
     float sum = 0;
     vector<float> a = aList.at(layer - 2);
     vector<int> labelVector = labelToVector(trueYLabel);
@@ -475,7 +515,8 @@ float ANN::calculate_total_error(int trueYLabel) {
 }
 
 
-vector<float> ANN::lastLayerError(int trueY) {
+// vector<float> ANN::lastLayerError(int trueY) {
+vector<float> ANN::lastLayerError(int trueY, vector<vector<float> > aList, vector<vector<float> > inputSumList) {
     vector<float> lastLayerErrors;
     vector<float> a = aList.at(layer - 2);
 
@@ -493,7 +534,7 @@ vector<float> ANN::lastLayerError(int trueY) {
 }
 
 
-vector<float> ANN::Error(int layer, vector<float> error) {  // l = L-1 to 2
+vector<float> ANN::Error(int layer, vector<float> error, vector<vector<float> > inputSumList) {  // l = L-1 to 2
     vector<float> LayerErrors;
     int nextLayerNeuronNumbers = neuron[layer];         // [n]
     int currentLayerNeronNumbers = neuron[layer - 1];   // [m]
@@ -718,11 +759,15 @@ void ANN::predict(std::vector<std::vector<float> > X, std::vector<float> Y) {
 
     vector<float>result;
 
+    vector<vector<float> > aList;   // new
+    vector<vector<float> > inputSumList;   // new
+
     for (int indexX = 0; indexX < 3; indexX++) {
         clearList();
         for (int layerIndex = 1; layerIndex < layer; layerIndex++)  // Loop every layer except input layer
         {
-            FeedForward(layerIndex, X.at(indexX), indexX);
+            // FeedForward(layerIndex, X.at(indexX), indexX);
+            FeedForward(layerIndex, X.at(indexX), indexX, aList, inputSumList);
         }
 //        softmax(float z, vector<vector<float>> inputSumList, int layer)
 
