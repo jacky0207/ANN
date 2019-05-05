@@ -16,7 +16,22 @@
 
 using namespace std;
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char * argv[])
+{  
+    // Throw if thread number out of range
+    if (argc != 2)
+    {
+        cout << "Usage: enter thread count from 1 - 4" << endl;
+        return 1;
+    }
+
+    int thread_count = stoi(argv[1]);
+    if (thread_count < 1 || thread_count > 4)
+    {
+        cout << "Usage: enter thread count from 1 - 4" << endl;
+        return 1;
+    }
+
     // Load data
     vector< vector<float> > X_train;
     vector<float> y_train;
@@ -53,8 +68,8 @@ int main(int argc, const char * argv[]) {
     double start = omp_get_wtime();
 
     // Test ann class
-    ANN ann(2, 16, 12);
-    ann.Train(X_train, y_train, 0.1, 4, 3);
+    ANN ann(2, 16, 12); // 4 layer, neuron: n, 16, 12, 10
+    ann.Train(X_train, y_train, 0.1, 12, 4, thread_count); // r = 0.1, 12 sample/mini-batch, 4 epoch
     ann.predict(X_train, y_train);
 
     double end = omp_get_wtime();

@@ -80,7 +80,8 @@ private:
     void PrintWeight();
     void PrintBias();
     void PrintActivation();
-    void PrintinputSumList();
+    // void PrintinputSumList();
+    void PrintinputSumList(std::vector<std::vector<float> > inputSumList);
     void PrintErrorList();
 public:
     explicit ANN(int hiddenLayer, ...);    // Set the number of layers
@@ -90,7 +91,8 @@ public:
                std::vector<float> Y, // 1st digit of dataset
                float r,
                int miniBatchSize,   // number of mini-batch = total number of dataset / mini-batch size
-               int epoch);
+               int epoch,
+               int thread_count);   // number of thread
 
     // Compare result
     void predict(std::vector<std::vector<float> > X,

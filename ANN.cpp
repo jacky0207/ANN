@@ -100,7 +100,8 @@ void ANN::Train(vector<vector<float> > X,
                 vector<float> Y,
                 float r,
                 int miniBatchSize,
-                int epoch) {
+                int epoch,
+                int thread_count) {
     // Initialize W
     InitializeW(X);
 
@@ -151,7 +152,7 @@ void ANN::Train(vector<vector<float> > X,
             // Calculate current layer a and loss in parallel
             // Push to the miniBatchList in serial
 
-            #  pragma omp parallel for num_threads(1) \
+            #  pragma omp parallel for num_threads(thread_count) \
                 shared(miniBatchAList, miniBatchErrorList, miniBatchSize, miniBatchIndex, layer, X, Y) \
                 private(aList, inputSumList, errorsList)
             for (int correlatedIndexX = 0; correlatedIndexX < miniBatchSize; ++correlatedIndexX)    // Loop samples in mini-batch
@@ -219,6 +220,7 @@ void ANN::Train(vector<vector<float> > X,
 
                 // Store miniBatchList in serial due to the arrange of dataset
                 // May not match between alist and errorlist
+                # pragma omp critical
                 {
                     // Store list to temp list
                     miniBatchAList.push_back(aList);
@@ -779,7 +781,7 @@ void ANN::predict(std::vector<std::vector<float> > X, std::vector<float> Y) {
         }
 
         cout << "***** PrintinputSumList  *****" << endl;
-        PrintinputSumList();
+        PrintinputSumList(inputSumList);
 
 
         cout << "Number of the " << indexX << "th sample data is " <<  Y.at(indexX) << endl;
@@ -1147,7 +1149,7 @@ void ANN::PrintActivation() {
     }
 }
 
-void ANN::PrintinputSumList() {
+void ANN::PrintinputSumList(vector<vector<float> > inputSumList) {
     for (int layerIndex = 1; layerIndex < layer; layerIndex++) {
         vector<float> sum = inputSumList.at(layerIndex - 1);    // a of current layer
         cout << "layer " << layerIndex << " summation " << endl;

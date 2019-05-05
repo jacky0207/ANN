@@ -1,0 +1,4 @@
+./a.out 1 > train_WithoutOpenMP.txt
+./a.out 2 > train_thread2.txt
+./a.out 3 > train_thread3.txt
+./a.out 4 > train_thread4.txt
