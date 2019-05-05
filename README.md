@@ -1,8 +1,8 @@
 # ANN
 In mac os
 
-
 brew install libomp
 
+clang++ -Xpreprocessor -fopenmp main.cpp ANN.cpp -o a.out -lomp 
 
-clang++ -Xpreprocessor -fopenmp main.cpp -o main -lomp 
+./a.out thread_count
