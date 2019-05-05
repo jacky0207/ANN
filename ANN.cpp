@@ -15,6 +15,8 @@
 #include <sstream>
 #include <iterator>
 
+#include <omp.h>  
+
 using namespace std;
 
 vector<int> labelToVector(int y) {
@@ -128,6 +130,8 @@ void ANN::Train(vector<vector<float> > X,
     {
         cout << "--------------------------------------------------" << "Epoch " << epochIndex << "--------------------------------------------------" << endl;
 
+        double start = omp_get_wtime();
+
         for (int miniBatchIndex = 0; miniBatchIndex < numberOfMiniBatch; ++miniBatchIndex)  // Loop mini-batch
         {
             cout << "--------------------------------------------------" << "Mini-batch " << miniBatchIndex << "--------------------------------------------------" << endl;
@@ -238,6 +242,10 @@ void ANN::Train(vector<vector<float> > X,
             cout << "--------------------------------------------------" << "end Mini-batch " << miniBatchIndex << "--------------------------------------------------" << endl;
             cout << endl;
         }
+
+        double end = omp_get_wtime();
+
+        cout << "Epoch " << epochIndex << " running time: " << (end - start) << " second" << endl;
 
         cout << "--------------------------------------------------" << "end Epoch " << epochIndex << "--------------------------------------------------" << endl;
     }

@@ -9,6 +9,8 @@
 //#include <windows.h>
 #include <algorithm>
 
+#include <omp.h>  
+
 // Custom
 #include "ANN.h"
 
@@ -48,18 +50,24 @@ int main(int argc, const char * argv[]) {
     // X_train.erase(X_train.begin());
     // y_train.erase(y_train.begin());
 
+    double start = omp_get_wtime();
+
     // Test ann class
-    // ANN ann(2, 16, 12);
-    // ann.Train(X_train, y_train, 0.1, 1, 1);
-    // ann.predict(X_train, y_train);
+    ANN ann(2, 16, 12);
+    ann.Train(X_train, y_train, 0.1, 4, 3);
+    ann.predict(X_train, y_train);
+
+    double end = omp_get_wtime();
+
+    cout << "Total running time: " << (end - start) << " second" << endl;
     
     // // Save weight
     // ann.Save();
 
     // Load weight
-    ANN ann2(2, 16, 12);
-    ann2.Load();
-    ann2.predict(X_train, y_train);
+    // ANN ann2(2, 16, 12);
+    // ann2.Load();
+    // ann2.predict(X_train, y_train);
 
     return 0;
 }
