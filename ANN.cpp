@@ -101,7 +101,11 @@ void ANN::Train(vector<vector<float> > X,
                 float r,
                 int miniBatchSize,
                 int epoch,
-                int thread_count) {
+                int thread_count,
+                int blockNumber)
+{
+    this->blockNumber = blockNumber;
+
     // Initialize W
     InitializeW(X);
 
@@ -378,30 +382,55 @@ void ANN::InitializeW(vector<vector<float> > X) {
 
     for (int layerIndex = 1; layerIndex < layer; layerIndex++)  // l = 2-L, loop hidden layer
     {
-
         vector<vector<float> > W;    // W of current layer
         int lastLayerNeuron = neuron[layerIndex - 1];   // preivous layer neuron number
 
-        for (int neuronIndex = 0; neuronIndex < neuron[layerIndex]; neuronIndex++)   // row = neuron number
+
+        // Separate by block
+        int neuronBlockSize = neuron[layerIndex] / blockNumber;
+
+        for (int neuronIndex = 0; neuronIndex < neuron[layerIndex]; neuronIndex += neuronBlockSize)  // neuron block
         {
-            vector<float> wRow;
+            for (int neuronBlockIndex = 0; neuronBlockIndex < neuronBlockSize; neuronBlockIndex++)   // row = neuron number
+            {
+                vector<float> wRow;
 
+                for (int j = 0; j < lastLayerNeuron; j++) {
 
-            for (int j = 0; j < lastLayerNeuron; j++) {
+                    float min = 0.1;
+                    float max = 1;
+                    float num = (max - min) * rand() / (RAND_MAX + 1.0) + min;
+                    wRow.push_back(num/50);
+                    // if (layerIndex == 3) {
+                    //    cout << "init layer: " << layerIndex << " , neuronIndex is " << neuronIndex << " , num is: " << num << endl;
+                    // }
+                }
 
-                float min = 0.1;
-                float max = 1;
-                float num = (max - min) * rand() / (RAND_MAX + 1.0) + min;
-                wRow.push_back(num/50);
-                // if (layerIndex == 3) {
-                //    cout << "init layer: " << layerIndex << " , neuronIndex is " << neuronIndex << " , num is: " << num << endl;
-                // }
+                W.push_back(vector<float>(wRow)); // column = last layer neuron number
+                wRow.clear();
             }
-
-
-            W.push_back(vector<float>(wRow)); // column = last layer neuron number
-            wRow.clear();
         }
+
+        // for (int neuronIndex = 0; neuronIndex < neuron[layerIndex]; neuronIndex++)   // row = neuron number
+        // {
+        //     vector<float> wRow;
+
+
+        //     for (int j = 0; j < lastLayerNeuron; j++) {
+
+        //         float min = 0.1;
+        //         float max = 1;
+        //         float num = (max - min) * rand() / (RAND_MAX + 1.0) + min;
+        //         wRow.push_back(num/50);
+        //         // if (layerIndex == 3) {
+        //         //    cout << "init layer: " << layerIndex << " , neuronIndex is " << neuronIndex << " , num is: " << num << endl;
+        //         // }
+        //     }
+
+
+        //     W.push_back(vector<float>(wRow)); // column = last layer neuron number
+        //     wRow.clear();
+        // }
 
         WList.push_back(W);    // push to W
     }
@@ -462,34 +491,70 @@ vector<float> ANN::SigmoidActivation(int l, vector<float> sample, vector<vector<
     previousA = l == 1 ? sample : aList.at(l - 2); // get sample or previous a
     b = bList.at(l - 1);
 
-    // Calculate z and a
-    // zl = wla(l-1) + bl
-    for (int neuronIndex = 0; neuronIndex < w.size(); neuronIndex++)    // every neuron
+    int neuronBlockSize = w.size() / blockNumber;
+    int previousABlockSize = previousA.size() / blockNumber;
+
+    // Split neuron into blocks
+    for (int neuronIndex = 0; neuronIndex < w.size(); neuronIndex += neuronBlockSize)
     {
-        vector<float> neuronWeight = w.at(neuronIndex);
-                // cout << "w ok" << endl;
-
-        float summation = 0;    // summation
-
-        summation += b.at(neuronIndex);
-                // cout << "b ok" << endl;
-
-        for (int previousAIndex = 0;
-             previousAIndex < previousA.size(); previousAIndex++)   // every previous layer neuron
+        // Calculate z and a
+        // zl = wla(l-1) + bl
+        for (int neuronBlockIndex = 0; neuronBlockIndex < neuronBlockSize; neuronBlockIndex++)    // every neuron
         {
-            // cout << previousAIndex << " AND " << previousA.size() << endl;
-            // if(l-1 > 0)
-            //     cout << "layer : " << l << " Nerous: " << neuronIndex << " weight: " <<  neuronWeight.at(previousAIndex) << " *  input " << previousA.at(previousAIndex) << endl;
+            vector<float> neuronWeight = w.at(neuronIndex + neuronBlockIndex);
+                    // cout << "w ok" << endl;
 
-            summation += neuronWeight.at(previousAIndex) * previousA.at(previousAIndex);
+            float summation = 0;    // summation
 
+            summation += b.at(neuronIndex + neuronBlockIndex);
+                    // cout << "b ok" << endl;
+
+            for (int previousAIndex = 0; previousAIndex < previousA.size(); previousAIndex += previousABlockSize)   // every previous layer neuron
+            {
+                for (int previousABlockIndex = 0; previousABlockIndex < previousABlockSize; previousABlockIndex++)   // every previous layer neuron
+                {
+                    int previousARealIndex = previousAIndex + previousABlockIndex;
+                    summation += neuronWeight.at(previousARealIndex) * previousA.at(previousARealIndex);
+                }
+            }
+
+            z.push_back(summation);
+            float activat = sigmoid(summation);
+            // cout << "summation" << summation << endl;
+            a.push_back(activat);
         }
 
-        z.push_back(summation);
-        float activat = sigmoid(summation);
-        // cout << "summation" << summation << endl;
-        a.push_back(activat);
     }
+    
+
+    // // Calculate z and a
+    // // zl = wla(l-1) + bl
+    // for (int neuronIndex = 0; neuronIndex < w.size(); neuronIndex++)    // every neuron
+    // {
+    //     vector<float> neuronWeight = w.at(neuronIndex);
+    //             // cout << "w ok" << endl;
+
+    //     float summation = 0;    // summation
+
+    //     summation += b.at(neuronIndex);
+    //             // cout << "b ok" << endl;
+
+    //     for (int previousAIndex = 0;
+    //          previousAIndex < previousA.size(); previousAIndex++)   // every previous layer neuron
+    //     {
+    //         // cout << previousAIndex << " AND " << previousA.size() << endl;
+    //         // if(l-1 > 0)
+    //         //     cout << "layer : " << l << " Nerous: " << neuronIndex << " weight: " <<  neuronWeight.at(previousAIndex) << " *  input " << previousA.at(previousAIndex) << endl;
+
+    //         summation += neuronWeight.at(previousAIndex) * previousA.at(previousAIndex);
+
+    //     }
+
+    //     z.push_back(summation);
+    //     float activat = sigmoid(summation);
+    //     // cout << "summation" << summation << endl;
+    //     a.push_back(activat);
+    // }
 
     inputSumList.push_back(z);  // push to passed ref
 
@@ -558,26 +623,44 @@ vector<float> ANN::Error(int layer, vector<float> error, vector<vector<float> > 
     // Calculate wTloss
     vector<float> wTloss;
 
-    for (int currentLayerNeuronIndex = 0; currentLayerNeuronIndex < currentLayerNeronNumbers; currentLayerNeuronIndex++)    // Loop m
+    int blockSize = currentLayerNeronNumbers / blockNumber;
+    int nextLayerNeuronSize = nextLayerNeuronNumbers / blockNumber;
+
+    // Split neuron into blocks
+    for (int currentLayerNeuronIndex = 0; currentLayerNeuronIndex < currentLayerNeronNumbers; currentLayerNeuronIndex += blockSize)
     {
-        float sum = 0;
-
-        for (int nextLayerNeuronIndex = 0; nextLayerNeuronIndex < nextLayerNeuronNumbers; nextLayerNeuronIndex++)   // Loop n
+        for (int currentLayerNeuronBlockIndex = 0; currentLayerNeuronBlockIndex < blockSize; currentLayerNeuronBlockIndex++)    // Loop m
         {
-            // sum += w[n][m] + l[n]
-            sum += nextLayerW.at(nextLayerNeuronIndex).at(currentLayerNeuronIndex) + nextLayerError.at(nextLayerNeuronIndex);
-        }
+            float sum = 0;
 
-        wTloss.push_back(sum);
+            for (int nextLayerNeuronIndex = 0; nextLayerNeuronIndex < nextLayerNeuronNumbers; nextLayerNeuronIndex += nextLayerNeuronSize)   // Loop n
+            {
+                for (int nextLayerNeuronBlockIndex = 0; nextLayerNeuronBlockIndex < nextLayerNeuronSize; nextLayerNeuronBlockIndex++)   // Loop n
+                {
+                    // sum += w[n][m] + l[n]
+                    int currentLayerNeuronRealIndex = currentLayerNeuronIndex + currentLayerNeuronBlockIndex;
+                    int nextLayerNeuronRealIndex = nextLayerNeuronIndex + nextLayerNeuronBlockIndex;
+
+                    sum += nextLayerW.at(nextLayerNeuronRealIndex).at(currentLayerNeuronRealIndex)
+                            + nextLayerError.at(nextLayerNeuronRealIndex);
+                    }
+            }
+
+            wTloss.push_back(sum);
+        }
     }
 
     // Calculate this layer loss
     vector<float> currentLayerError;
 
-    for (int currentLayerNeuronIndex = 0; currentLayerNeuronIndex < currentLayerNeronNumbers; currentLayerNeuronIndex++)    // Loop m
+    for (int currentLayerNeuronIndex = 0; currentLayerNeuronIndex < currentLayerNeronNumbers; currentLayerNeuronIndex += blockSize)
     {
-        // error = wTl * sgmd(z)
-        currentLayerError.push_back(wTloss.at(currentLayerNeuronIndex) * sigmoid_derivative(layerZ.at(currentLayerNeuronIndex)));
+        for (int currentLayerNeuronBlockIndex = 0; currentLayerNeuronBlockIndex < blockSize; currentLayerNeuronBlockIndex++)    // Loop m
+        {
+            // error = wTl * sgmd(z)
+            int realIndex = currentLayerNeuronIndex + currentLayerNeuronBlockIndex;
+            currentLayerError.push_back(wTloss.at(realIndex) * sigmoid_derivative(layerZ.at(realIndex)));
+        }
     }
 
     // Return result
@@ -660,6 +743,9 @@ void ANN::updateWeights(float r,
         int column = miniBatchAList.at(0).at(layerIndex - 1).size();    // last layer neuron    [n]
                                                                         // Weight               [m*n]
 //        cout << "row * column = " << row << "*" << column << endl;
+
+        int rowBlockSize = row / 2;
+        int columnBlockSize = column / 2;
         
         for (int rowIndex = 0; rowIndex < row; rowIndex++)  // Initialize w[m*n] and b[m]
         {
@@ -681,55 +767,83 @@ void ANN::updateWeights(float r,
             // Add up sum
             // cout << "W sum" << endl;
             // cout << "Error" << endl;
-            for (int rowIndex = 0; rowIndex < row; rowIndex++)
-            {
-                for (int columnIndex = 0; columnIndex < column; columnIndex++)
-                {
-                    // w[m, n] = loss[m] * a[n]
-                    wSum.at(rowIndex).at(columnIndex) += error.at(rowIndex) * a.at(columnIndex);  // loss * a
-                    // cout << wSum.at(rowIndex).at(columnIndex) << " ";
-                    // cout << error.at(rowIndex) * a.at(columnIndex) << " ";
-                }               
-                // cout << endl;
 
-                bSum.at(rowIndex) += error.at(rowIndex);    // loss
+            for (int rowIndex = 0; rowIndex < row; rowIndex += rowBlockSize)
+            {
+                for (int columnIndex = 0; columnIndex < column; columnIndex += columnBlockSize)
+                {
+                    for (int rowBlockIndex = 0; rowBlockIndex < rowBlockSize; rowBlockIndex++)
+                    {
+                        for (int columnBlockIndex = 0; columnBlockIndex < columnBlockSize; columnBlockIndex++)
+                        {
+                            // w[m, n] = loss[m] * a[n]
+                            int rowRealIndex = rowIndex + rowBlockIndex;
+                            int columnRealIndex = columnIndex + columnBlockIndex;
+
+                            wSum.at(rowRealIndex).at(columnRealIndex) += error.at(rowRealIndex) * a.at(columnRealIndex);  // loss * a
+                            // cout << wSum.at(rowIndex).at(columnIndex) << " ";
+                            // cout << error.at(rowIndex) * a.at(columnIndex) << " ";
+
+                            // Add bias if only real column = 0
+                            if (columnRealIndex == 0)
+                            {
+                                bSum.at(rowRealIndex) += error.at(rowRealIndex);    // loss
+                            }
+                        }               
+                        // cout << endl;
+                    }
+                }
             }
+            
+
+            // for (int rowIndex = 0; rowIndex < row; rowIndex++)
+            // {
+            //     for (int columnIndex = 0; columnIndex < column; columnIndex++)
+            //     {
+            //         // w[m, n] = loss[m] * a[n]
+            //         wSum.at(rowIndex).at(columnIndex) += error.at(rowIndex) * a.at(columnIndex);  // loss * a
+            //         // cout << wSum.at(rowIndex).at(columnIndex) << " ";
+            //         // cout << error.at(rowIndex) * a.at(columnIndex) << " ";
+            //     }               
+            //     // cout << endl;
+
+            //     bSum.at(rowIndex) += error.at(rowIndex);    // loss
+            // }
             // cout << endl;
             // cout << endl;
         }
 
-        // cout << "wSum" << endl;
+        // Update W and b
+        for (int rowIndex = 0; rowIndex < row; rowIndex += rowBlockSize)
+        {
+            for (int columnIndex = 0; columnIndex < column; columnIndex += columnBlockSize)
+            {
+                for (int rowBlockIndex = 0; rowBlockIndex < rowBlockSize; rowBlockIndex++)
+                {
+                    for (int columnBlockIndex = 0; columnBlockIndex < columnBlockSize; columnBlockIndex++)
+                    {
+                        int rowRealIndex = rowIndex + rowBlockIndex;
+                        int columnRealIndex = columnIndex + columnBlockIndex;
+
+                        w->at(rowRealIndex).at(columnRealIndex) -= r / miniBatchAList.size() * wSum.at(rowRealIndex).at(columnRealIndex);  // loss * a
+
+                        // Update bias if only real column = 0
+                        if (columnRealIndex == 0)
+                        {
+                            b->at(rowRealIndex) -= r / miniBatchAList.size() * bSum.at(rowRealIndex);
+                        }
+                    }
+                }
+            }
+        }
         // for (int rowIndex = 0; rowIndex < row; rowIndex++)
         // {
         //     for (int columnIndex = 0; columnIndex < column; columnIndex++)
         //     {
-        //         cout << wSum.at(rowIndex).at(columnIndex) << " ";
-        //     }
-        //     cout << endl;
-        // }
-        // cout << endl;
-
-        // cout << "bSum" << endl;
-        // for (int rowIndex = 0; rowIndex < row; rowIndex++)
-        // {
-        //     cout << bSum.at(rowIndex) << " ";
-        // }
-        // cout << endl;
-
-        // cout << "original W and b" << endl;
-        // PrintWeight();
-        // PrintBias();
-
-        // Update W and b
-        for (int rowIndex = 0; rowIndex < row; rowIndex++)
-        {
-            for (int columnIndex = 0; columnIndex < column; columnIndex++)
-            {
-                w->at(rowIndex).at(columnIndex) -= r / miniBatchAList.size() * wSum.at(rowIndex).at(columnIndex);  // loss * a
-            }     
+        //         w->at(rowIndex).at(columnIndex) -= r / miniBatchAList.size() * wSum.at(rowIndex).at(columnIndex);  // loss * a
+        //     }     
             
-            b->at(rowIndex) -= r / miniBatchAList.size() * bSum.at(rowIndex);
-        }
+        // }
 
 //        cout << "Updated W and b" << endl;
         // PrintWeight();

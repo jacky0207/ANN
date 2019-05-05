@@ -30,7 +30,7 @@ private:
                                             // a = (a0
                                             //      ...
                                             //      an)
-     std::vector<std::vector<float> > inputSumList; // input summation before activation function layer 2-L
+    std::vector<std::vector<float> > inputSumList; // input summation before activation function layer 2-L
     // a = (a0
     //      ...
     //      an)
@@ -39,6 +39,8 @@ private:
     // a = (a0
     //      ...
     //      an)
+
+    int blockNumber;
 
 private:
     void InitializeW(std::vector<std::vector<float> > X);
@@ -92,7 +94,8 @@ public:
                float r,
                int miniBatchSize,   // number of mini-batch = total number of dataset / mini-batch size
                int epoch,
-               int thread_count);   // number of thread
+               int thread_count,   // number of thread
+               int blockNumber);    // number of block for cache blocking
 
     // Compare result
     void predict(std::vector<std::vector<float> > X,

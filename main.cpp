@@ -69,7 +69,7 @@ int main(int argc, const char * argv[])
 
     // Test ann class
     ANN ann(2, 16, 12); // 4 layer, neuron: n, 16, 12, 10
-    ann.Train(X_train, y_train, 0.1, 12, 4, thread_count); // r = 0.1, 12 sample/mini-batch, 4 epoch
+    ann.Train(X_train, y_train, 0.1, 12, 4, thread_count, 4); // r = 0.1, 12 sample/mini-batch, 4 epoch
     ann.predict(X_train, y_train);
 
     double end = omp_get_wtime();
